@@ -26,11 +26,15 @@ def add_data(device_input_data):
     with open("device_table/devices.json") as fp:
         listObj = json.load(fp)
 
+    fp.close() 
+
     listObj.append(to_append)
     print(listObj)
 
     with open("device_table/devices.json", "r+") as file:
         json.dump(listObj, file, indent=4,  separators=(',',': '))
+
+    file.close()
 
 #this function will retreive any data given a user id or a device id
 def get_data(user_id, device_id):
@@ -51,6 +55,7 @@ def get_data(user_id, device_id):
             for entry in all_data:
                 if entry["did"] == device_id:
                     retrieved_devices.append(entry)
+    file.close()
     
     print(retrieved_users)
     print(retrieved_devices)
