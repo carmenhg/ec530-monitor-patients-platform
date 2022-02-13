@@ -22,7 +22,7 @@ def add_data(device_input_data):
         to_append["uid"] = data["uid"]
         to_append["measurement"] = data["measurement"]
         to_append["timestamp"] = data["timestamp"]
-    except (TypeError):
+    except (KeyError):
         print("There is a value missing")
 
     f.close()
