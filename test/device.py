@@ -44,13 +44,13 @@ def get_data(user_id, device_id):
         if user_id != "":
             for entry in all_data:
                 if entry["uid"] == user_id:
-                    retrieved.append(entry)
+                    retrieved_users.append(entry)
         
         #match all entries with gives did
         if device_id != "":
             for entry in all_data:
                 if entry["did"] == device_id:
-                    retrieved.append(entry)
+                    retrieved_devices.append(entry)
     
     print(retrieved_users)
     print(retrieved_devices)
