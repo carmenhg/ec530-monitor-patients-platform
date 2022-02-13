@@ -54,6 +54,7 @@ def get_data(user_id, device_id):
     
     print(retrieved_users)
     print(retrieved_devices)
+    print("Updated workflow")
 
 
 
