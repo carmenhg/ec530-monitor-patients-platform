@@ -14,11 +14,16 @@ def add_data(device_input_data):
     data = json.load(f)
 
     #extract needed data
-    to_append["did"] = data["did"]
-    to_append["type"] = data["type"]
-    to_append["uid"] = data["uid"]
-    to_append["measurement"] = data["measurement"]
-    to_append["timestamp"] = data["timestamp"]
+    #error check
+
+    try:
+        to_append["did"] = data["did"]
+        to_append["type"] = data["type"]
+        to_append["uid"] = data["uid"]
+        to_append["measurement"] = data["measurement"]
+        to_append["timestamp"] = data["timestamp"]
+    except (TypeError):
+        print("There is a value missing")
 
     f.close()
 
