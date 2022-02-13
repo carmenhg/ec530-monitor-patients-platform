@@ -23,7 +23,7 @@ def add_data(device_input_data):
     f.close()
 
     #once I get this info add to a json file to save 
-    with open("/device_table/devices.json") as fp:
+    with open("test/device_table/devices.json") as fp:
         listObj = json.load(fp)
 
     fp.close() 
@@ -31,7 +31,7 @@ def add_data(device_input_data):
     listObj.append(to_append)
     print(listObj)
 
-    with open("/device_table/devices.json", "r+") as file:
+    with open("test/device_table/devices.json", "r+") as file:
         json.dump(listObj, file, indent=4,  separators=(',',': '))
 
     file.close()
@@ -41,7 +41,7 @@ def get_data(user_id, device_id):
     retrieved_users = []
     retrieved_devices = []
     #load json file that has the info
-    with open("/device_table/devices.json") as file:
+    with open("test/device_table/devices.json") as file:
         all_data = json.load(file)
 
         #match all entries with gives uid
