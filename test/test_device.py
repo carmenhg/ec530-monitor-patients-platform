@@ -1,15 +1,17 @@
-import device
+import register_device
+import pull_data
+import push_data
 
 #this file contains unit test s for the device module 
 def test1_all_data():
-    device.add_data("test/device_input_data/test1.json")
+    device.push_data("test/device_input_data/test1.json")
     
 def test2_no_did():
-    device.add_data("test/device_input_data/test2.json")
+    device.push_data("test/device_input_data/test2.json")
 
-def test3_pull_uid():
-    device.get_data("1234", "")
+def test3_pull_did_1():
+    device.pull_data("1234")
 
-def test3_pull_did():
-    device.get_data("", "abcd")
+def test4_pull_did_2():
+    device.pull_data("abcd")
     
