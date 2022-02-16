@@ -28,7 +28,7 @@ def register_device(device_type, device_key):
         #register the device is all info is provided
         #and create a device_id for it. How to create this? Random string? Fixed length?
         device_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-        if(device_type != "")
+        if(device_type != ""):
             new_device = {"device_id" : device_id, "device_key" : device_key, "type" : device_type}
 
         #save info to json output file
