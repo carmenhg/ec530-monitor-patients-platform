@@ -1,15 +1,9 @@
-# import register_device
-import sys
-  
-# setting path
-sys.path.append('../ec530-monitor-patients-platform')
-  
-# importing
-from ec530-monitor-patients-platform.push_data import push_data
-from ec530-monitor-patients-platform.pull_data import pull_data
+import pull_data
+import push_data
+import register_device
   
 
-#this file contains unit test s for the device module 
+#this file contains unit tests for the device module 
 def test1_all_data():
     push_data.push_data("test/device_input_data/test1.json")
     
