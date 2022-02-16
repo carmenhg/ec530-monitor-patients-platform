@@ -32,7 +32,7 @@ def push_data(json_input):
     #close the file
     input_f.close()
 
-    if(regist_devices["device_key"]) not in regist_devices.values():
+    if(input_data["device_key"] not in regist_devices.values()):
         print("The device is not registered in our systems. We cannot accept your data. Please register your device")
     else:
         #extract needed data: type, measurement, timestamp
