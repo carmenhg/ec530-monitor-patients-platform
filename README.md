@@ -2,6 +2,18 @@
 
 Author: Carmen Hurtado 
 
-## Branching Structure
-* Each module will be implemented in their own branch
-* Main will have completely working code that will ultimately bring together all the modules. 
+## DEVICE Interface
+This module has 3 main objectives:
+- Register 3rd party devices in our system
+    - Thermomethers
+    - Blood Pressure Monitors
+    - Pulse
+    - Oximeter
+    - Scales
+    - Glucometer
+    - etc
+- Push data received from these devices into the system's database
+- Pull data from the database for multiple uses
+
+
+
