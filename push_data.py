@@ -1,41 +1,62 @@
+#This function pushes data into Database(soon to come) 
+#Data is received in the form of a json file with specified parameters
+#Format is as follow 
+"""
+{
+    "device_id": string,
+    "device_key": string,
+    "type": string,
+    "measurement": string,
+    "timestamp": string
+}
+"""
 import json
-# DEVICE INTERFACE
 
-# add data. Funct will be called by 3rd party device. More than one device data input at a time?
-#for now I will pass a json to mock incoming data 
-def push_data(device_input_data):
-    # dict to hold temp data 
-    to_append = {}
+def push_data(json_input):
 
-    # device info I need: did, type, measurement, time it was taken
-    f = open(device_input_data)
- 
+    # dict to hold data to save
+    to_append = {"device_id": "", "type" : "", "measurement" : "", "timestamp" : ""}
+
+    #open file to read
+    input_f = open(json_input)
     # returns JSON object as a dictionary
-    data = json.load(f)
+    input_data = json.load(input_f)
+    #close file
+    input_f.close()
 
-    #extract needed data
-    #error check
+    #Check that device is valid using 'device_key'
+    #When a device is registered their 'key' will be added to a list 
+    #list is preset for now, change later when DB is up
+    devices_f = open('test/devices_output/regist_devices.json')
+    regist_devices = json.load(devices_f)
+    #close the file
+    input_f.close()
 
-    try:
-        to_append["did"] = data["did"]
-        to_append["type"] = data["type"]
-        to_append["measurement"] = data["measurement"]
-        to_append["timestamp"] = data["timestamp"]
-    except (KeyError):
-        print("There is a value missing")
-
-    f.close()
-
-    #once I get this info add to a json file to save 
-    with open("test/device_table/devices.json") as fp:
+    if(input_f["device_key"]) not in regist_devices.values():
+        print("The device is not registered in our systems. We cannot accept your data. Please register your device")
+    else:
+        #extract needed data: type, measurement, timestamp
+        #check for errors
+        """
+        1. Missing values
+        2. incorrect type (str, float, etc)
+        3. measurement that makes no sense: this would be different for devices of different types. what to do??
+        """
+        for key in to_append:
+            if (input_data[key] == "") or (type(input_data[key]) != str) :
+                print("Value is missing or has incorrect format")
+            else:
+                to_append[key] = input_data[key]
+        
+    #finally save the data into our DB(soon to come), json output file for now
+    with open("test/devices_output/devices.json") as fp:
         listObj = json.load(fp)
 
     fp.close() 
 
     listObj.append(to_append)
-    print(listObj)
 
-    with open("test/device_table/devices.json", "r+") as file:
+    with open("test/devices_output/devices.json", "r+") as file:
         json.dump(listObj, file, indent=4,  separators=(',',': '))
 
     file.close()
