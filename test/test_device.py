@@ -10,8 +10,8 @@ def test2_no_did():
     push_data.push_data("test/device_input_data/test2.json")
 
 def test3_pull_did_1():
-    device.pull_data("1234")
+    pull_data.pull_data("1234")
 
 def test4_pull_did_2():
-    device.pull_data("abcd")
+    pull_data.pull_data("abcd")
     
