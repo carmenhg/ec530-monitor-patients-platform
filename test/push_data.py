@@ -49,14 +49,17 @@ def push_data(json_input):
                 to_append[key] = input_data[key]
         
     #finally save the data into our DB(soon to come), json output file for now
-    with open("test/devices_output/devices.json") as fp:
-        listObj = json.load(fp)
+    #open file to read
+    temp_f = open("test/devices_output/devices.json")
+    # returns JSON object as a dictionary
+    temp_data = json.load(temp_f)
+    #close file
+    temp_f.close()
 
-    fp.close() 
+    temp_data.append(to_append)
 
-    listObj.append(to_append)
 
     with open("test/devices_output/devices.json", "r+") as file:
-        json.dump(listObj, file, indent=4,  separators=(',',': '))
+        json.dump(temp_data, file, indent=4,  separators=(',',': '))
 
     file.close()
