@@ -1,6 +1,6 @@
 import json
 #this function will retreive any data given a device id
-def get_data(user_id):
+def get_data(device_id):
     retrieved_users = []
     retrieved_devices = []
     #load json file that has the info
