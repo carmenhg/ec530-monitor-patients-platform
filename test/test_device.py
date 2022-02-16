@@ -1,4 +1,4 @@
-import register_device
+# import register_device
 import pull_data
 import push_data
 
