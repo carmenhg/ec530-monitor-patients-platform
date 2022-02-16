@@ -1,6 +1,6 @@
 # import register_device
-import pull_data
-import push_data
+import ./pull_data
+import ./push_data
 
 #this file contains unit test s for the device module 
 def test1_all_data():
