@@ -12,6 +12,7 @@
 #input to the function is device_type and device_key
 import json
 import string
+import random
 
 def register_device(device_type, device_key):
     #check if device was previously registered
