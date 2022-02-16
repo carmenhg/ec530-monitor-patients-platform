@@ -2,11 +2,11 @@
 import sys
   
 # setting path
-sys.path.append('../ec530-monitor-patients-patform')
+sys.path.append('../ec530-monitor-patients-platform')
   
 # importing
-from ec530-monitor-patients-patform.push_data import push_data
-from ec530-monitor-patients-patform.pull_data import pull_data
+from ec530-monitor-patients-platform.push_data import push_data
+from ec530-monitor-patients-platform.pull_data import pull_data
   
 
 #this file contains unit test s for the device module 
