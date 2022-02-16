@@ -1,0 +1,16 @@
+[
+    {
+        "uid": "1234",
+        "did": "abcd",
+        "type": "temp",
+        "measurement": 98.3,
+        "timestamp": "2022-02-13T18:25:43.511Z"
+    },
+    {
+        "did": "abcd",
+        "type": "temp",
+        "uid": "3425",
+        "measurement": 98.3,
+        "timestamp": "2022-02-13T18:25:43.511Z"
+    }
+]
