@@ -26,7 +26,7 @@ data_push_args.add_argument("timestamp", type=str, help="Must provide measuremen
 
 #args for registering a device function 
 reg_dev_args = reqparse.RequestParser()
-reg_dev_args.add_argument("device_id", type=str, help="Must provide device id", required=True)
+reg_dev_args.add_argument("device_type", type=str, help="Must provide device type", required=True)
 reg_dev_args.add_argument("device_key", type=str, help="Must provide device key", required=True)
 
 class Device(Resource):
@@ -34,13 +34,14 @@ class Device(Resource):
         args = data_pull_args.parse_args()
         return pull_data.pull_data(args)
     
-    def put(self):
+    # can I define two post methods equally???
+    def post(self):
         args = data_push_args.parse_args()
         return push_data.push_data(args)
 
-    def put(self):
+    def post(self):
         args = reg_dev_args.parse_args()
-        return register_device.register_device(args)
+        return register_device.register_device(args["device_type"], args["device_key"])
 
 api.add_resource(Device, "/")
 

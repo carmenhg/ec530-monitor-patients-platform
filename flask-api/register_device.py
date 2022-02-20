@@ -14,33 +14,36 @@ import json
 import string
 import random
 
+#list of registered devices included here to test api, actual values will come from db later 
+regist_devices = [
+    {
+    "device_id": "abcd",
+    "device_key": "test1",
+    "type": "bp"
+    },
+    {
+    "device_id": "defg",
+    "device_key": "test2",
+    "type": "temp"
+    },
+    {
+    "device_id": "hijk",
+    "device_key": "tes3",
+    "type": "weight"
+    }
+]
+
 def register_device(device_type, device_key):
-    #check if device was previously registered
-    #load json file that has the info, will come from DB later on
-    regist_dev_f = open("test/devices_output/regist_devices.json")
-    # returns JSON object as a dictionary
-    regist_devices = json.load(regist_dev_f)
-    #close file
-    regist_dev_f.close()
-
-    if(device_key != "" and regist_devices[device_key]):
-        print("Device is already registered")
-    else:
-        #register the device is all info is provided
-        #and create a device_id for it. How to create this? Random string? Fixed length?
-        device_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-        if(device_type != ""):
-            new_device = {"device_id" : device_id, "device_key" : device_key, "type" : device_type}
-
-        #save info to json output file
-        with open("test/devices_output/regist_devices.json") as fp:
-            listObj = json.load(fp)
-
-        fp.close() 
-
-        listObj.append(new_device)
-
-        with open("test/devices_output/devices.json", "r+") as file:
-            json.dump(listObj, file, indent=4,  separators=(',',': '))
-
-        file.close()
+    #check if device was previously registered, no need to check for device key empty because api does that already 
+    for key in regist_devices:
+        if key["device_key"] == device_key:
+            print("Device is already registered")
+        else:
+            #register the device is all info is provided
+            #and create a device_id for it. How to create this? Random string? Fixed length?
+            device_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+            if(device_type != ""):
+                new_device = {"device_id" : device_id, "device_key" : device_key, "type" : device_type}
+                #add new device in list 
+                regist_devices.append(new_device)
+        
