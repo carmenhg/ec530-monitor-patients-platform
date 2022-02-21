@@ -20,28 +20,8 @@
         "type": "temp"
     },
     {
-        "device_id": "MDO8RN79DT",
-        "device_key": "1234",
-        "type": "temp"
-    },
-    {
-        "device_id": "RB34DGDW4Z",
-        "device_key": "1234",
-        "type": "temp"
-    },
-    {
-        "device_id": "MS5HFF5ATQ",
-        "device_key": "1234",
-        "type": "temp"
-    },
-    {
-        "device_id": "WVTBV5QY03",
-        "device_key": "1234",
-        "type": "temp"
-    },
-    {
-        "device_id": "YW3SNEMELC",
-        "device_key": "1234",
+        "device_id": "IW4DIDG1ZF",
+        "device_key": "hellocarmen2",
         "type": "temp"
     }
 ]

@@ -26,26 +26,33 @@ def register_device(device_type, device_key):
     #close file
     regist_dev_f.close()
 
-    for key in regist_devices:
-        if key["device_key"] == device_key:
-            print("Device is already registered")
-        else:
-            #register the device is all info is provided
-            #and create a device_id for it. How to create this? Random string? Fixed length?
-            device_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-            new_device = {"device_id" : device_id, "device_key" : device_key, "type" : device_type}
-            #add new device in list 
-            #save info to json output file
-            with open("saved_data/registered_devices_output.json") as fp:
-                listObj = json.load(fp)
+    #extract all keys for comparison
+    temp_device_keys = []
 
-            fp.close() 
+    for element in regist_devices:
+        temp_device_keys.append(element["device_key"])
 
-            listObj.append(new_device)
+    #see if any of the keys match the input key
+    if device_key in temp_device_keys:
+        return
+    else:
+        #register the device is all info is provided
+        #and create a device_id for it. How to create this? Random string? Fixed length?
+        device_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        new_device = {"device_id" : device_id, "device_key" : device_key, "type" : device_type}
+        #add new device in list 
+        #save info to json output file
+        with open("saved_data/registered_devices_output.json") as fp:
+            listObj = json.load(fp)
 
-            with open("saved_data/registered_devices_output.json", "r+") as file:
-                json.dump(listObj, file, indent=4,  separators=(',',': '))
+        fp.close() 
 
-            file.close()
+        listObj.append(new_device)
+
+        with open("saved_data/registered_devices_output.json", "r+") as file:
+            json.dump(listObj, file, indent=4,  separators=(',',': '))
+
+        file.close()
+        return
 
         

@@ -1,1 +1,44 @@
-[]
+[
+    {
+        "device_id": "abcd",
+        "type": "temp",
+        "measurement": "100",
+        "timestamp": "16:47"
+    },
+    {
+        "device_id": "abcd",
+        "type": "temp",
+        "measurement": "100",
+        "timestamp": "16:47"
+    },
+    {
+        "device_id": "abcd",
+        "type": "temp",
+        "measurement": "100",
+        "timestamp": "16:47"
+    },
+    {
+        "device_id": "abcd",
+        "type": "temp",
+        "measurement": "100",
+        "timestamp": "16:47"
+    },
+    {
+        "device_id": "abcd",
+        "type": "temp",
+        "measurement": "100",
+        "timestamp": "16:47"
+    },
+    {
+        "device_id": "abcd",
+        "type": "temp",
+        "measurement": "100",
+        "timestamp": "16:47"
+    },
+    {
+        "device_id": "abcd",
+        "type": "temp",
+        "measurement": "100",
+        "timestamp": "16:47"
+    }
+]
