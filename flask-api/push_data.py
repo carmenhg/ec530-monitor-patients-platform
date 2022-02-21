@@ -35,7 +35,7 @@ def push_data(device_id, device_key, device_type, measurement, timestamp):
     devices_f = open('saved_data/registered_devices_output.json')
     registered_devices = json.load(devices_f)
     #close the file
-    input_f.close()
+    devices_f.close()
 
     if(device_key not in registered_devices.values()):
         return print("The device is not registered in our systems. We cannot accept your data. Please register your device")
