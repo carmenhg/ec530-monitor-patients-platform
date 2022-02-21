@@ -1,6 +1,8 @@
 #This function pulls data from the Database(soon to come) 
 #Data is stored (for now) in a json file that has all the inputs from devices separated into blocks 
-#Format is as follow 
+#Input: device ID, function will retreive any data block that matches this device id 
+
+#Output Format is as follow 
 """
 [
     {
@@ -20,35 +22,23 @@
 
 import json
 
-#just using it for testing flask api, this data will come from the db later on
-devices = [
-    {
-        "device_id": "abcd",
-        "type": "temp",
-        "measurement": 98.3,
-        "timestamp": "2022-02-13T18:25:43.511Z"
-    },
-    {
-        "type": "temp",
-        "device_id": "abcd",
-        "measurement": 98.3,
-        "timestamp": "2022-02-13T18:25:43.511Z"
-    }
-]
-
 #this function will retreive data given a device id 
 def pull_data(device_id):
     #list that will be returned
-    retrieved_devices = []
+    retrieved_measurements = []
+
+    #load json file that has the info, will come from DB later on
+    all_data_f = open("saved_data/push_data_output.json")
+    # returns JSON object as a dictionary
+    all_data = json.load(all_data_f)
+    #close file
+    all_data_f.close()
     
     #match all entries with given device_id
-    #check that a device_id was provided
-    if device_id != "":
-        for entry in devices:
-            if entry["device_id"] == device_id:
-                retrieved_devices.append(entry) 
-    else:
-        print("A device id must be provided")
-  
+    #check that a device_id was provided, flask api args already does this
     
-    return(retrieved_devices)
+    for entry in all_data:
+        if entry["device_id"] == device_id:
+            retrieved_measurements.append(entry) 
+    
+    return(retrieved_measurements)

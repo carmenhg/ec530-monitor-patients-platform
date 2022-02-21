@@ -20,7 +20,7 @@ data_push_args = reqparse.RequestParser()
 #the "help" parameter is essentially an error message to the sender 
 data_push_args.add_argument("device_id", type=str, help="Must provide device id", required=True)
 data_push_args.add_argument("device_key", type=str, help="Must provide device key", required=True)
-data_push_args.add_argument("type", type=str, help="Must provide device type", required=True)
+data_push_args.add_argument("device_type", type=str, help="Must provide device type", required=True)
 data_push_args.add_argument("measurement", type=str, help="Must provide device measurement", required=True)
 data_push_args.add_argument("timestamp", type=str, help="Must provide measurement timestamp", required=True)
 
@@ -32,12 +32,12 @@ reg_dev_args.add_argument("device_key", type=str, help="Must provide device key"
 class Device(Resource):
     def get(self):
         args = data_pull_args.parse_args()
-        return pull_data.pull_data(args)
+        return pull_data.pull_data(args["device_id"])
     
     # can I define two post methods equally???
     def post(self):
         args = data_push_args.parse_args()
-        return push_data.push_data(args)
+        return push_data.push_data(args["device_id"], args["device_key"], args["device_type"], args["measurement"], args["timestamp"])
 
     def post(self):
         args = reg_dev_args.parse_args()
