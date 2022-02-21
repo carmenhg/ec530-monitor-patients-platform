@@ -33,7 +33,7 @@ def push_data(device_id, device_key, device_type, measurement, timestamp):
     #When a device is registered their 'key' will be added to a list 
     #list is preset for now, change later when DB is up
     devices_f = open('saved_data/registered_devices_output.json')
-    regist_devices = json.load(devices_f)
+    registered_devices = json.load(devices_f)
     #close the file
     input_f.close()
 
