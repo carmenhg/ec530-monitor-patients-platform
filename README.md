@@ -34,14 +34,32 @@ User stories (need to think of more scenarios that could happen):
 API definitions:
 - Register_device
     - This function registers a new device that then will be available for assigning and measuring data
-    - A device key is given to it to keep track of registration
+        - Devices cannot double register 
+        - Device needs to be one of the acceptable devices. For example a phone cannot register 
+        - ASSUMPTIONS:
+            - None, any 3rd party device that is acceptable can register
+- Assign_device
+    - This function assigns a device to a patient
+        -cDevice needs to be in the list of registered devices to be able to be assigned 
+        - Device cannot push_data unless there is a user_id specified to it
+        - Can a device be assigned to a patient that already has a device of the same type assigned?
+        - ASSUMPTIONS:
+            - Only MPs can assign a device, MP_id will be provided when assigning a device. I don’t have to worry about where that id is coming from 
+
 - Pull_data
     - This function pulls data from the db given a device id 
+    - ASSUMPTIONS:
+        - None
 - Push_data
     - This function pushes new data (device measurement) to the db 
+        - Device needs to have a user_id associated to it to be able to do this 
+        - ASSUMPTIONS:
+            - None 
+
 
 REST API:
 - Register_device POST 
+- Assign_device POST
 - Pull_data GET
 - Push_data POST
 
