@@ -1,6 +1,8 @@
-# ec530-monitor-patients-patform
+# ec530-monitor-patients-platform
 
 Author: Carmen Hurtado 
+
+For a more detailed documentation of each api method please visit this repo's Wiki page [here](https://github.com/carmenhg/ec530-monitor-patients-platform/wiki)
 
 # Chat Module Design 
 ## User stories (need to think of more scenarios that could happen): 
@@ -11,16 +13,39 @@ Author: Carmen Hurtado
 ## API definitions: 
 - Upload_text_message
     - This function will push any new message to the db as the messages are being sent
+        - Checks that it is a text message meaning it is a string with no attachments
+        - Needs as input, sender, receiver, timestamp of when it is sent
+        - ASSUMPTIONS:
+            - none
+
 - Retrieve_message
     - This function will pull messages from the db to be displayed for chat history 
+        - Input: receiver and sender ids to build a conversation
+        - ASSUMPTIONS:
+        - None 
+
 - Search_by_keyword
     - This function will filter the messages in the db through a user inputted keyword and return the list of messages (in chronological order) to the requester. If the message includes attachments it will also return this attachment.
+        - Inputs: keyword, requester_id
+        - ASSUMPTIONS:
+            - none
+
 - Upload_video_message
     - This function will be called when the message includes a video attachment. Functionality is the same as Upload_text_message
         - Not sure if I need a separate function for this
+        - Inputs: sender, receiver, timestamp
+        - ASSUMPTIONS:
+            - Video is saved already in some sort of blob storage (this would be a functionality of this module or of another module? I think this module)
+            - This function only needs the link to this video to save the data in the db 
+
 - Upload_voice_message
     - This function will be called when the message includes a voice attachment. Functionality is the same as Upload_text_message
         - Not sure if I need a separate function for this
+        - Inputs: sender, receiver, timestamp
+        - ASSUMPTIONS:
+            - Voice  is saved already in some sort of blob storage (this would be a functionality of this module or of another module? I think this module)
+            - This function only needs the link to this video to save the data in the db 
+
 
 ## REST API
 - Upload_text_message POST
