@@ -50,7 +50,24 @@ def assign_device(device_id, user_id):
                 return False
             else:
                 user["devices"].append(device_id)
+                #last is to add to the list of registered devices a new field that says to which user this device is assigned to
+                with open("saved_data/registered_devices_output.json") as fp:
+                    listObj = json.load(fp)
+
+                fp.close() 
+
+                for entry in listObj:
+                    if entry["device_id"] == device_id:
+                        entry["user_id"] = user_id
+
+                with open("saved_data/registered_devices_output.json", "r+") as file:
+                    json.dump(listObj, file, indent=4,  separators=(',',': '))
+
+                file.close()
+                
                 return True
 
     # the device id is added to the list of devices aasigned to a patient, when pulling info about the patient then i can look 
     # for device id in reg devices table and see what "type" of device it is 
+
+    #last is to add to the list of registered devices a new field that says to which user this device is assigned to 

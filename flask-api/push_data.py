@@ -23,49 +23,43 @@
 
 import json
 
-def push_data(device_id, device_key, device_type, measurement, timestamp):
+def push_data(device_id, user_id, device_type, measurement, timestamp):
 
     # dict to hold data to save which is coming from args input, so they get checked for missing data already
-    to_append = {"device_id": device_id, "type" : device_type, "measurement" : measurement, "timestamp" : timestamp}
+    to_append = {"user_id": user_id, "device_id": device_id, "type" : device_type, "measurement" : measurement, "timestamp" : timestamp}
 
+    #need to check that both device_id and user_id are valid, meaning the user exists and that the device is assigned to this user
 
-    #Check that device is valid using 'device_key'
-    #When a device is registered their 'key' will be added to a list 
-    #list is preset for now, change later when DB is up
     devices_f = open('saved_data/registered_devices_output.json')
     registered_devices = json.load(devices_f)
-    #close the file
     devices_f.close()
+
     for element in registered_devices:
-        if(device_key == element["device_key"]):
-            #extract needed data: type, measurement, timestamp
-            #check for errors
-            """
-            1. Missing values -> flask args already checks for this 
-            2. incorrect type (str, float, etc) -> flask args already checks for this 
-            3. measurement that makes no sense: this would be different for devices of different types. what to do??
-            """
-            #NEED TO IMPLEMENT POINT 3
+        if(device_id == element["device_id"]):
+            #check if device is assigned to a patient
+            if user_id not in element:
+                return False
+            #check if it is the correct patient 
+            elif user_id != element["user_id"]:
+                return False
+            else:
+                #finally save the data into our DB(soon to come), json output file for now
+                #open file to read
+                temp_f = open("saved_data/push_data_output.json")
+                # returns JSON object as a dictionary
+                temp_data = json.load(temp_f)
+                #close file
+                temp_f.close()
 
-            #finally save the data into our DB(soon to come), json output file for now
-            #open file to read
-            temp_f = open("saved_data/push_data_output.json")
-            # returns JSON object as a dictionary
-            temp_data = json.load(temp_f)
-            #close file
-            temp_f.close()
-
-            temp_data.append(to_append)
+                temp_data.append(to_append)
 
 
-            with open("saved_data/push_data_output.json", "r+") as file:
-                json.dump(temp_data, file, indent=4,  separators=(',',': '))
+                with open("saved_data/push_data_output.json", "r+") as file:
+                    json.dump(temp_data, file, indent=4,  separators=(',',': '))
 
-            file.close()
+                file.close()
 
-            #if operation was successful return an okay message
-            return to_append
-        else:
-            return
+                #if operation was successful return an okay message
+                return to_append
     
     

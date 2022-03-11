@@ -18,7 +18,7 @@ import random
 
 def register_device(device_type, device_identifier): # identifier has to be an id from the manufactirer, MAC address maybe?
 
-    #check if device was previously registered, no need to check for device identifier empty because api does that already 
+    #check if device was previously registered, no need to check for device identifier is empty because api does that already 
 
     #load json file that has the info, will come from DB later on
     regist_dev_f = open("saved_data/registered_devices_output.json")
