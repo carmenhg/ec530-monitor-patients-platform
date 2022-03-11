@@ -6,6 +6,7 @@ Error checking within the function:
     1. 
     2. 
     3. 
+This function will also call a helper function to store the attachment in a BLOB storage 
 '''
 
 import string 
