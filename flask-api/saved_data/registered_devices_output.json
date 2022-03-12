@@ -28,5 +28,25 @@
         "reg_device_id": "LLFJUR17V6",
         "device_identifier": "MAC1",
         "type": "temp"
+    },
+    {
+        "reg_device_id": "11MISXPP1M",
+        "device_identifier": "MAC2",
+        "type": "temp"
+    },
+    {
+        "reg_device_id": "7LSNQSOBFD",
+        "device_identifier": "MAC3",
+        "type": "temp"
+    },
+    {
+        "reg_device_id": "RPS5D52VPB",
+        "device_identifier": "MAC4",
+        "type": "temp"
+    },
+    {
+        "reg_device_id": "5JWIVWNU8Q",
+        "device_identifier": "MAC12",
+        "type": "phone"
     }
 ]

@@ -35,7 +35,7 @@ def register_device(device_type, device_identifier): # identifier has to be an i
 
     #see if any of the keys match the input key
     if device_identifier in temp_device_identifiers:
-        return False 
+        return False, json.loads('{"response": "Device was previously registered"}')
     #if device is not registered yet
     else:
         #register the device
@@ -55,6 +55,6 @@ def register_device(device_type, device_identifier): # identifier has to be an i
             json.dump(listObj, file, indent=4,  separators=(',',': '))
 
         file.close()
-        return True
+        return True, new_device
 
         

@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_restful import Api, Resource, reqparse
+from flask_restful import Api, Resource, reqparse, abort
 import pull_data
 import push_data
 import register_device
@@ -38,9 +38,12 @@ class RegisterDevice(Resource):
 
     def post(self):
         args = reg_dev_args.parse_args()
-        success = register_device.register_device(args["device_type"], args["device_identifier"])
-        if success == False:
-            abort
+        success, data = register_device.register_device(args["device_type"], args["device_identifier"])
+        if success == True:
+            return data,200
+        elif success == False:
+            return data
+        
     
     def put(self):
         args = assign_dev_args.parse_args()
