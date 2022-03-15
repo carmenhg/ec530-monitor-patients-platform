@@ -2,7 +2,7 @@
 
 Author: Carmen Hurtado 
 
-For a more detailed documentation of each api method please visit this repo's Wiki page [here](https://github.com/carmenhg/ec530-monitor-patients-platform/wiki)
+For a more detailed documentation of each api method please visit this repo's Wiki page [here](https://github.com/carmenhg/ec530-monitor-patients-platform/wiki)A
 
 # Chat Module Design 
 ## User stories (need to think of more scenarios that could happen): 
