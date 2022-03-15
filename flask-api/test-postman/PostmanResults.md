@@ -23,4 +23,4 @@ Postman has the ability to run all the requests in a collection for as many iter
 
 In the below image we can see how Postman organizes the results from these tests. This is somehow similar to Github Actions workflow and I will be exploring more to see if there are ways to automate this even further by maybe integrating it with my push commands on the Github Repo. 
 
-<img src="Screenshots/DeviceCollectionTestResults.png" style="height: 400px; width:400px;"/>
+<img src="Screenshots/DeviceCollectionTestResults.png" style="height: 400px; width:600px;"/>
