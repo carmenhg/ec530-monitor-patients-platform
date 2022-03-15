@@ -11,12 +11,13 @@ For a more detailed documentation of each api method please visit this repo's Wi
 - Patient can write a text or upload video or voice message to the MP
 
 ## API definitions: 
-- Upload_text_message
+- Upload_message
     - This function will push any new message to the db as the messages are being sent
-        - Checks that it is a text message meaning it is a string with no attachments
+        - Adds links to attachments if any
         - Needs as input, sender, receiver, timestamp of when it is sent
         - ASSUMPTIONS:
-            - none
+            - Video or voice attachemnt is saved already in some sort of blob storage (this would be a functionality of this module or of another module? I think this module)
+            - This function only needs the link to this video or voice to save the data in the db
 
 - Retrieve_message
     - This function will pull messages from the db to be displayed for chat history 
@@ -29,22 +30,6 @@ For a more detailed documentation of each api method please visit this repo's Wi
         - Inputs: keyword, requester_id
         - ASSUMPTIONS:
             - none
-
-- Upload_video_message
-    - This function will be called when the message includes a video attachment. Functionality is the same as Upload_text_message
-        - Not sure if I need a separate function for this
-        - Inputs: sender, receiver, timestamp
-        - ASSUMPTIONS:
-            - Video is saved already in some sort of blob storage (this would be a functionality of this module or of another module? I think this module)
-            - This function only needs the link to this video to save the data in the db 
-
-- Upload_voice_message
-    - This function will be called when the message includes a voice attachment. Functionality is the same as Upload_text_message
-        - Not sure if I need a separate function for this
-        - Inputs: sender, receiver, timestamp
-        - ASSUMPTIONS:
-            - Voice  is saved already in some sort of blob storage (this would be a functionality of this module or of another module? I think this module)
-            - This function only needs the link to this video to save the data in the db 
 
 
 ## REST API

@@ -7,4 +7,6 @@ Error checking within the function:
 import json 
 
 def blob_storage():
+    #NEED TO IMPLEMENT ONCE I HAVE DB INTEGRATED
+    return 
     
