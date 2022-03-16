@@ -11,7 +11,7 @@ NotPreviouslyRegisteredJSON = {
     "device_type" : "temp",
     "device_identifier" : "MAC1"
 }
-def NotPreviouslyRegistered():
+def test_NotPreviouslyRegistered():
     register_device.register_device(NotPreviouslyRegisteredJSON)
 
 #Expected Output: Unsuccessful , should notify requester
@@ -19,14 +19,14 @@ PreviouslyRegisteredJSON = {
     "device_type" : "temp",
     "device_identifier" : "MAC1"
 }
-def PreviouslyRegistered():
+def test_PreviouslyRegistered():
     register_device.register_device(PreviouslyRegisteredJSON)
 
 #Expected Output: Unsuccessful , should notify requester
 RegisteringMissingParamJSON = {
     "device_type" : "bp"
 }
-def RegisteringMissingParam():
+def test_RegisteringMissingParam():
     register_device.register_device(RegisteringMissingParamJSON)
 
 #Expected Output: Successful ,should add device_id to users list
@@ -34,7 +34,7 @@ AssignValidJSON = {
     "device_id" : "abcd",
     "user_id" : "yupe"
 }
-def AssignValid():
+def test_AssignValid():
     assign_device.assign_device(AssignValidJSON)
 
 #Expected Output: Unsuccessful , should notify requester
@@ -42,14 +42,14 @@ AssignInvalidJSON = {
     "device_id" : "abcd",
     "user_id" : "ghtd"
 }
-def AssignInvalid():
+def test_AssignInvalid():
     assign_device.assign_device(AssignInvalidJSON)
 
 #Expected Output: sucessful, should display pulled data
 PullDataValidDeviceJSON = {
     "device_id" : "abcd"
 }
-def PullDataValidDevice():
+def test_PullDataValidDevice():
     pull_data.pull_data(PullDataValidDeviceJSON)
 
 #Expected Output: Unsuccessful , should notify requester
@@ -57,7 +57,7 @@ PullDataInvalidInputSizeJSON = {
     "device_id" : "carmen",
     "user_id" : "abcd"
 }
-def PullDataInvalidInputSize():
+def test_PullDataInvalidInputSize():
     pull_data.pull_data(PullDataInvalidInputSizeJSON)
 
 #Expected Output: succesful, should add new entry to measurement data json 
@@ -68,7 +68,7 @@ PushDataValidDeviceJSON = {
     "measurement": "101",
     "timestamp" : "03/12"
 }
-def PushDataValidDevice():
+def test_PushDataValidDevice():
     push_data.push_data(PushDataValidDeviceJSON)
 
 #Expected Output: Unsuccessful , should notify requester
@@ -79,7 +79,7 @@ PushDataInvalidDeviceJSON = {
     "measurement": "101",
     "timestamp" : "03/12"
 }
-def PushDataInvalidDevice():
+def test_PushDataInvalidDevice():
     push_data.push_data(PushDataInvalidDeviceJSON)
 
 #Expected Output: Unsuccessful , should notify requester
@@ -90,7 +90,7 @@ PushDataInvalidUserJSON = {
     "measurement": "101",
     "timestamp" : "03/12"
 }
-def PushDataInvalidUser():
+def test_PushDataInvalidUser():
     push_data.push_data(PushDataInvalidUserJSON)
 
 
