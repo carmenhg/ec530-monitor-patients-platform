@@ -1,52 +1,7 @@
 [
     {
-        "device_id": "abcd",
-        "device_identifier": "test1",
-        "type": "bp"
-    },
-    {
-        "device_id": "defg",
-        "device_identifier": "test2",
+        "reg_device_id": "RH84VD0LRG",
+        "device_identifier": "MAC14",
         "type": "temp"
-    },
-    {
-        "device_id": "hijk",
-        "device_identifier": "tes3",
-        "type": "weight"
-    },
-    {
-        "device_id": "YNX1WC3LG2",
-        "device_identifier": "1234",
-        "type": "temp"
-    },
-    {
-        "device_id": "IW4DIDG1ZF",
-        "device_identifier": "hellocarmen2",
-        "type": "temp"
-    },
-    {
-        "reg_device_id": "LLFJUR17V6",
-        "device_identifier": "MAC1",
-        "type": "temp"
-    },
-    {
-        "reg_device_id": "11MISXPP1M",
-        "device_identifier": "MAC2",
-        "type": "temp"
-    },
-    {
-        "reg_device_id": "7LSNQSOBFD",
-        "device_identifier": "MAC3",
-        "type": "temp"
-    },
-    {
-        "reg_device_id": "RPS5D52VPB",
-        "device_identifier": "MAC4",
-        "type": "temp"
-    },
-    {
-        "reg_device_id": "5JWIVWNU8Q",
-        "device_identifier": "MAC12",
-        "type": "phone"
     }
 ]

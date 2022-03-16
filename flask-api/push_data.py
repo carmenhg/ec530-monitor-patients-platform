@@ -4,7 +4,7 @@
 """
 {
     "device_id": string,
-    "device_key": string,
+    "user_id": string,
     "type": string,
     "measurement": string,
     "timestamp": string
@@ -12,14 +12,6 @@
 """
 
 #Output: dict with values confirming that the data was saved 
-"""
-{
-    "device_id": string,
-    "type": string,
-    "measurement": string,
-    "timestamp": string
-}
-"""
 
 import json
 
@@ -38,10 +30,10 @@ def push_data(device_id, user_id, device_type, measurement, timestamp):
         if(device_id == element["device_id"]):
             #check if device is assigned to a patient
             if user_id not in element:
-                return False
+                return False, json.loads('{"response": "Device is not assigned to any user"}')
             #check if it is the correct patient 
             elif user_id != element["user_id"]:
-                return False
+                return False, json.loads('{"response": "Device is not assigned to this patient "}')
             else:
                 #finally save the data into our DB(soon to come), json output file for now
                 #open file to read
@@ -60,6 +52,6 @@ def push_data(device_id, user_id, device_type, measurement, timestamp):
                 file.close()
 
                 #if operation was successful return an okay message
-                return to_append
+                return True, to_append
     
     

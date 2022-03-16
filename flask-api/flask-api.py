@@ -13,7 +13,8 @@ api = Api(app)
 
 #args for getting data 
 data_pull_args = reqparse.RequestParser()
-data_pull_args.add_argument("device_id", type=str, help="Must provide device id", required=True)
+data_pull_args.add_argument("device_id", type=str, help="Must provide device id")
+data_pull_args.add_argument("user_id", type=str, help="Must provide user id")
 
 #args for pushing new data 
 data_push_args = reqparse.RequestParser()
@@ -47,17 +48,29 @@ class RegisterDevice(Resource):
     
     def put(self):
         args = assign_dev_args.parse_args()
-        return assign_device.assign_device(args["device_id"], args["user_id"])
+        success, data = assign_device.assign_device(args["device_id"], args["user_id"])
+        if success == True:
+            return data,200
+        elif success == False:
+            return data
 
 class DeviceData(Resource):
 
     def get(self):
         args = data_pull_args.parse_args()
-        return pull_data.pull_data(args["device_id"])
+        success, data = pull_data.pull_data(args["device_id"], args["user_id"])
+        if success == True:
+            return data,200
+        elif success == False:
+            return data
     
     def post(self):
         args = data_push_args.parse_args()
-        return push_data.push_data(args["device_id"], args["user_id"], args["device_type"], args["measurement"], args["timestamp"])
+        success, data = push_data.push_data(args["device_id"], args["user_id"], args["device_type"], args["measurement"], args["timestamp"])
+        if success == True:
+            return data,200
+        elif success == False:
+            return data
 
 api.add_resource(RegisterDevice, "/register")
 api.add_resource(DeviceData, "/data")

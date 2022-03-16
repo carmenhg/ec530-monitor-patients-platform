@@ -17,6 +17,18 @@ I have built as least two unit tests for each API method. As an example of how I
 
 *In the above image we can see an Valid request that returns to the user the new entry for the newly registered device and the gived device_id that was assigned to it. This id is later used for assigning to a patient.*
 
+<img src="Screenshots/missing-param.png" style="height: 400px; width:400px;"/>
+
+*In the above image we see an example were the device_identifier is missing from the input parameters*
+
+<img src="Screenshots/pull-data-valid.png" style="height: 400px; width:400px;"/>
+
+*In the above image we see an example were pulling data based on device id is successfull and the data that returns in a list*
+
+<img src="Screenshots/too-many-inputs.png" style="height: 400px; width:400px;"/>
+
+*In the above image we see an example were pulling data based on too many inputs notifies the user*
+
 ## Testing Automation with Postman 
 
 Postman has the ability to run all the requests in a collection for as many iterations as I would like. For this Postamn will run my requests and tell me what it returns; but also there needs to be TESTS added to the collection. These tests are scripts that postman runs for each request and can be modified to test for various things. As of now I am using their scripts templates to check that all my request return 200 OK response. 

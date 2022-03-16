@@ -47,7 +47,7 @@ def assign_device(device_id, user_id):
         if user_id == user["user_id"]:
             roles = user["roles"]
             if "p" not in roles:
-                return False
+                return False, json.loads('{"response": "User is not a patient, cannot be assigned device."}')
             else:
                 user["devices"].append(device_id)
                 #last is to add to the list of registered devices a new field that says to which user this device is assigned to
@@ -65,7 +65,7 @@ def assign_device(device_id, user_id):
 
                 file.close()
                 
-                return True
+                return True, json.loads('{"success"}')
 
     # the device id is added to the list of devices aasigned to a patient, when pulling info about the patient then i can look 
     # for device id in reg devices table and see what "type" of device it is 
