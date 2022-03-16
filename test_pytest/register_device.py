@@ -22,7 +22,7 @@ def register_device(device_type, device_identifier): # identifier has to be an i
 
     #check if device was previously registered
     #load json file that has the info, will come from DB later on
-    regist_dev_f = open("devices_output/regist_devices.json")
+    regist_dev_f = open("test_pytest/devices_output/regist_devices.json")
     # returns JSON object as a dictionary
     regist_devices = json.load(regist_dev_f)
     #close file
@@ -45,14 +45,14 @@ def register_device(device_type, device_identifier): # identifier has to be an i
         new_device = {"reg_device_id" : reg_device_id, "device_identifier" : device_identifier, "type" : device_type}
         #add new device in list 
         #save info to json output file
-        with open("devices_output/regist_devices.json") as fp:
+        with open("test_pytest/devices_output/regist_devices.json") as fp:
             listObj = json.load(fp)
 
         fp.close() 
 
         listObj.append(new_device)
 
-        with open("devices_output/regist_devices.json", "r+") as file:
+        with open("test_pytest/devices_output/regist_devices.json", "r+") as file:
             json.dump(listObj, file, indent=4,  separators=(',',': '))
 
         file.close()

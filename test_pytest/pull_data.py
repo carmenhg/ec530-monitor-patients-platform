@@ -16,7 +16,7 @@ def pull_data(device_id, user_id):
     retrieved_measurements = []
 
     #load json file that has the info, will come from DB later on
-    all_data_f = open("devices_output/push_data_output.json")
+    all_data_f = open("test_pytest/devices_output/push_data_output.json")
     # returns JSON object as a dictionary
     all_data = json.load(all_data_f)
     #close file

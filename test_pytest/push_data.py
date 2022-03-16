@@ -22,7 +22,7 @@ def push_data(device_id, user_id, device_type, measurement, timestamp):
 
     #need to check that both device_id and user_id are valid, meaning the user exists and that the device is assigned to this user
 
-    devices_f = open('devices_output/regist_devices.json')
+    devices_f = open('test_pytest/devices_output/regist_devices.json')
     registered_devices = json.load(devices_f)
     devices_f.close()
 
@@ -46,7 +46,7 @@ def push_data(device_id, user_id, device_type, measurement, timestamp):
                 temp_data.append(to_append)
 
 
-                with open("devices_output/push_data_output.json", "r+") as file:
+                with open("test_pytest/devices_output/push_data_output.json", "r+") as file:
                     json.dump(temp_data, file, indent=4,  separators=(',',': '))
 
                 file.close()

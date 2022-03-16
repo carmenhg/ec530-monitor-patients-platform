@@ -51,7 +51,7 @@ def assign_device(device_id, user_id):
             else:
                 user["devices"].append(device_id)
                 #last is to add to the list of registered devices a new field that says to which user this device is assigned to
-                with open("devices_output/regist_devices.json") as fp:
+                with open("test_pytest/devices_output/regist_devices.json") as fp:
                     listObj = json.load(fp)
 
                 fp.close() 
@@ -60,7 +60,7 @@ def assign_device(device_id, user_id):
                     if entry["device_id"] == device_id:
                         entry["user_id"] = user_id
 
-                with open("devices_output/regist_devices.json", "r+") as file:
+                with open("test_pytest/devices_output/regist_devices.json", "r+") as file:
                     json.dump(listObj, file, indent=4,  separators=(',',': '))
 
                 file.close()
