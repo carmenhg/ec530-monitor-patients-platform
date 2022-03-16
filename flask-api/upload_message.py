@@ -48,4 +48,6 @@ def upload_message(sender_id, receiver_id, text, voice, video, timestamp):
 
     file.close()
     
+    return True
+    
     
