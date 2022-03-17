@@ -22,24 +22,60 @@ import json
 # mean that I have to loop through all messages when I only want for 1 user
 # better idea could be to add messages to the USERS db??? How exactly to do this that makes the most sense????
 
-def retrieve_message(receiver_id, keyword):
+#For testing without the DB 
+USERS = [
+    {
+        "name": "Carmen Hurtado",
+        "user_id": "abcd",
+        "roles": ["mp"],
+        "devices": []
+    }, 
+    {
+        "name": "Andreas Papadkis",
+        "user_id": "defg",
+        "roles": ["p"],
+        "devices": []
+    }, 
+    {
+        "name": "Estela Hurtado",
+        "user_id": "ghtd",
+        "roles": ["a"],
+        "devices": []
+    }, 
+    {
+        "name": "Alicia Garcia",
+        "user_id": "yupe",
+        "roles": ["p"],
+        "devices": []
+        
+    }, 
+]
+
+def search_by_keyword(receiver_id, keyword):
 
     #list of messages to return, unformatted
     filtered_messages = []
 
-    #load json file that has the info, will come from DB later on
-    messages_list_handler = open("test_data/text_messages.json")
-    # returns JSON object as a dictionary
-    messages_list= json.load(messages_list_handler)
-    #close file
-    messages_list_handler.close()
+    #error check that user is registered in our system
+    user_ids = []
+    for user in USERS:
+        user_ids.append(user["user_id"])
+    if receiver_id not in user_ids:
+        return False, json.loads('{"response": "User is not registered in our system"}')
+    else:
+        #load json file that has the info, will come from DB later on
+        messages_list_handler = open("data/messages.json")
+        # returns JSON object as a dictionary
+        messages_list= json.load(messages_list_handler)
+        #close file
+        messages_list_handler.close()
 
-    for message in messages_list:
-        if message["receiver_id"] == receiver_id:
-            if keyword in message["data_string"]:
-                filtered_messages.append(message)
+        for message in messages_list:
+            if message["receiver_id"] == receiver_id:
+                if keyword in message["data_string"]:
+                    filtered_messages.append(message)
     
-    return filtered_messages
+        return True, filtered_messages
 
     
     
