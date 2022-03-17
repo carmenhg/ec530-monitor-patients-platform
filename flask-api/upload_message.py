@@ -24,7 +24,7 @@ def upload_message(sender_id, receiver_id, text, voice, video, timestamp):
         "attachments" : {
             "voice_link" : voice,
             "video_link" : video
-        }
+        },
         "timestamp": timestamp
     }
 
@@ -41,6 +41,6 @@ def upload_message(sender_id, receiver_id, text, voice, video, timestamp):
 
     file.close()
     
-    return True
+    return True, new_entry
     
     

@@ -49,7 +49,7 @@ def retrieve_message(receiver_id):
         return False, json.loads('{"response": "User is not registered in our system"}')
     else:
         #load json file that has the info, will come from DB later on
-        messages_list_handler = open("test_data/text_messages.json")
+        messages_list_handler = open("data/messages.json")
         # returns JSON object as a dictionary
         messages_list= json.load(messages_list_handler)
         #close file

@@ -42,7 +42,7 @@ class UploadMessage(Resource):
 
 class SearchKeyword(Resource):
     def get(self):
-        args = pull_messages_args.parse_args()
+        args = pull_keyword_args.parse_args()
         success, data = search_by_keyword.search_by_keyword(args["receiver_id"], args["keyword"])
         if success == True:
             return data,200
@@ -51,7 +51,7 @@ class SearchKeyword(Resource):
 
 class RetrieveMessage(Resource):
     def get(self):
-        args = pull_keyword_args.parse_args()
+        args = pull_messages_args.parse_args()
         success, data = retrieve_message.retrieve_message(args["receiver_id"])
         if success == True:
             return data,200

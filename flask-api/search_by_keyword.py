@@ -32,7 +32,7 @@ USERS = [
     }, 
     {
         "name": "Andreas Papadkis",
-        "user_id": "defg",
+        "user_id": "fghr",
         "roles": ["p"],
         "devices": []
     }, 
@@ -72,7 +72,7 @@ def search_by_keyword(receiver_id, keyword):
 
         for message in messages_list:
             if message["receiver_id"] == receiver_id:
-                if keyword in message["data_string"]:
+                if keyword in message["content"]:
                     filtered_messages.append(message)
     
         return True, filtered_messages

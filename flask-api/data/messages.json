@@ -1,1 +1,32 @@
-[]
+[
+    {
+        "sender_id": "abcd",
+        "receiver_id": "fghr",
+        "content": "Hello from Boston",
+        "attachments": {
+            "voice_link": null,
+            "video_link": null
+        },
+        "timestamp": "today"
+    },
+    {
+        "sender_id": "abcd",
+        "receiver_id": "fghr",
+        "content": "Hello from Boston",
+        "attachments": {
+            "voice_link": null,
+            "video_link": null
+        },
+        "timestamp": "today"
+    },
+    {
+        "sender_id": "abcd",
+        "receiver_id": "fghr",
+        "content": "Hello from Boston",
+        "attachments": {
+            "voice_link": null,
+            "video_link": null
+        },
+        "timestamp": "today"
+    }
+]
