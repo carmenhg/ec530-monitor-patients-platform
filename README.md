@@ -14,5 +14,9 @@ Author: Carmen Hurtado
             - This can cause errors if they try to write on the same spot
             - Or if one tries to read an entry that is being modified by the other one. The information would be out of date
 3. Split the processing of an API into multiple threads or processes?
+    - I think Threads are better fit for this because they use share memory and we eventually want to access the same databases to manage our data 
+
+## Organization of module 
+This branch has only the base code for mmulti threading operations. The functions used are stub functions to test the threads operations. 
 
 
