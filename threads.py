@@ -7,6 +7,7 @@ import threading
 app = Flask(__name__)
 api = Api(app)
 
+#Here I have stub function with sleep time in between completion that act as different threads
 def task1():
     print("Started Task UploadMessage...")
     print(threading.current_thread().name)
@@ -25,6 +26,7 @@ def task3():
     time.sleep(6)
     print("completed .....")
 
+#inside my restful call I can callthe thread module with the functions as the target. This will start a background thread while I am able to run other restful calls
 class UploadMessage(Resource):
     def post(self):
         threading.Thread(target=task1).start()

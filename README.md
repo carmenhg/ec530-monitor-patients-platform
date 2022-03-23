@@ -20,3 +20,5 @@ Author: Carmen Hurtado
 This branch has only the base code for mmulti threading operations. The functions used are stub functions to test the threads operations. 
 
 
+## Queue system
+In order to process the text I am building a queue system with Redis. 
