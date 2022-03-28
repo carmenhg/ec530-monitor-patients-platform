@@ -17,8 +17,9 @@ The modules are:
 - DATA MANAGEMENT
 
 ## Branching Structure
-* Each module will be implemented on their own branch
-* Main will only have finalized cworking code for each moduel that will ultimately bring them all together. 
+* Each module will be implemented on their own branch. Main reason to do this is to build modularity and have each module not be dependent of the other. 
+* **For the final project I will finalize the application that will utilize these modules and then all this cocde will come together. For now please look at individual branches**
+
 
 ## Module Documentation
 Please look at individual branches for an overall description of the module and its design. Each module will have separate files for separate functions. These files have documentation on how the interface works and specifics on how each function performs its supposed job. 
