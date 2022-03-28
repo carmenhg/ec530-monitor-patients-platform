@@ -41,6 +41,9 @@ As a visual aid for the processing I am using Flower. Flower is a dhasboard for 
 ![Celery Worker](/images/Flower-try1.png)
 
 ## Speech-to-Text 
-For this functionality I am using Mozilla's DeepSpeech module. This module relies on machine learning and for that I have downloaded the training files necessary for this. These are under the models folder. 
+For this functionality I am using Mozilla's DeepSpeech module. This module relies on machine learning and for that I have downloaded the training files necessary for this. These are under the models folder HOWEVER the model files are too big to commit to Github so I had to put them in my .gitignore file. But these models are being used by the transcriber and they are crucial for it to work. 
+The models were downloaded from 
+- [.pbmm file](https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm)
+- [.scorer file](https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer)
 
 I am using a tutorial as my 3rd party implementation of deepspeech. All code is referenced from [Here](https://www.assemblyai.com/blog/deepspeech-for-dummies-a-tutorial-and-overview-part-1/)
