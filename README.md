@@ -41,4 +41,6 @@ As a visual aid for the processing I am using Flower. Flower is a dhasboard for 
 ![Celery Worker](/images/Flower-try1.png)
 
 ## Speech-to-Text 
-For this functionality I am using Mozilla's DeepSpeech module. This module relies on machine learning and for that I have downloaded the training files necessary for this. These are under the DeepSpeech folder. 
+For this functionality I am using Mozilla's DeepSpeech module. This module relies on machine learning and for that I have downloaded the training files necessary for this. These are under the models folder. 
+
+I am using a tutorial as my 3rd party implementation of deepspeech. All code is referenced from [Here](https://www.assemblyai.com/blog/deepspeech-for-dummies-a-tutorial-and-overview-part-1/)
