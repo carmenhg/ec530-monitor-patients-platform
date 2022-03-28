@@ -33,7 +33,7 @@ Below is an image of the celery worker started. We can see how the tasks are que
 
 In the next image we can see the multi thread queue in action through the celery worker
 
-![Celery Worker](/images/stubs-multi-threads-celery.png)
+![Celery Worker](/images/stubs-multi-thread-celery.png)
 
 ## Flower dashboard
 As a visual aid for the processing I am using Flower. Flower is a dhasboard for Celery that lets us see the tasks in the queue and other stats about the processing of the tasks. Below is an example of a connected Flower dashboard to my project where we can see that there were tasks completed by my Celery worker. 
