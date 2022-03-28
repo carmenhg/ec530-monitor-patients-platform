@@ -17,13 +17,25 @@ Author: Carmen Hurtado
     - I think Threads are better fit for this because they use share memory and we eventually want to access the same databases to manage our data 
 
 ## Organization of module 
-This branch has only the base code for mmulti threading operations. The functions used are stub functions to test the threads operations. 
+This branch has only the base code for mmulti threading operations. The functions used are stub functions to test the threads operations. Speech to text functionality is comming soon. 
 
 
 ## Queue system
-In order to process the text I am building a task queue system with Redis. 
-Every time I submit an API request a new task or job will be added to the Redis queue for processing. 
-Three main functions let me see the status of the jobs in the queue
-- job.get_id(): returns the id of the newly created job after an API request 
-- job.get_status(): shows me the status of a specific job while they are being processed in the queue
-- job.result: shows me the result of a job, if it it finished or not (null)
+In order to process the text I am building an async task queue system with Celery and Redis as the broker. 
+Every time I submit an API request a new task or job will be added to the queue for processing and processed. 
+
+The code is simple, it has three functions that sleep for 6 seconds and then are finished. The functions are called from my API methods. To test the API request I am using Postman as I used for the other branches and modules of this project. 
+
+## Celery worker 
+Below is an image of the celery worker started. We can see how the tasks are queued and processed. The print statements I added inside the functions code to track in the celery worker's console. 
+
+![Celery Worker](/images/celery-worker-started.png)
+
+In the next image we can see the multi thread queue in action through the celery worker
+
+![Celery Worker](/images/stubs-multi-threads-celery.png)
+
+## Flower dashboard
+As a visual aid for the processing I am using Flower. Flower is a dhasboard for Celery that lets us see the tasks in the queue and other stats about the processing of the tasks. Below is an example of a connected Flower dashboard to my project where we can see that there were tasks completed by my Celery worker. 
+
+![Celery Worker](/images/Flower-try1.png)
