@@ -39,3 +39,6 @@ In the next image we can see the multi thread queue in action through the celery
 As a visual aid for the processing I am using Flower. Flower is a dhasboard for Celery that lets us see the tasks in the queue and other stats about the processing of the tasks. Below is an example of a connected Flower dashboard to my project where we can see that there were tasks completed by my Celery worker. 
 
 ![Celery Worker](/images/Flower-try1.png)
+
+## Speech-to-Text 
+For this functionality I am using Mozilla's DeepSpeech module. This module relies on machine learning and for that I have downloaded the training files necessary for this. These are under the DeepSpeech folder. 
