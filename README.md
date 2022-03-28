@@ -21,4 +21,9 @@ This branch has only the base code for mmulti threading operations. The function
 
 
 ## Queue system
-In order to process the text I am building a queue system with Redis. 
+In order to process the text I am building a task queue system with Redis. 
+Every time I submit an API request a new task or job will be added to the Redis queue for processing. 
+Three main functions let me see the status of the jobs in the queue
+- job.get_id(): returns the id of the newly created job after an API request 
+- job.get_status(): shows me the status of a specific job while they are being processed in the queue
+- job.result: shows me the result of a job, if it it finished or not (null)
