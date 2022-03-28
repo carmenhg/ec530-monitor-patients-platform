@@ -2,6 +2,8 @@
 
 Author: Carmen Hurtado 
 ## Project Description
+
+**Please visit the wiki page for this repo for a more detailed documentation on each API function for the different modules that are implemented [WIKI](https://github.com/carmenhg/ec530-monitor-patients-platform/wiki/Chat-Module)**
 In this project I am building a health care platform to monitor patients. The user of this platform include patients, medical professional, and system administrators. They each have different roles and access to the platform's functionalities. 
 
 The project is divided into submodules and I am building each individually to be connected together in the final stage of development. 
@@ -12,6 +14,7 @@ The modules are:
     - This module has an api to manage all data sent in a chat conversation between two users. It takes care of database utilization for text, voice messages, video messages, and other attachments. 
 - CALENDAR
 - VOICE TRANSCRIBER
+    - This module utilizes multi threading oprations to achive this. The code is under banch named threads.
 - ALERTS
 - ADMINISTRATIVE
 - DATA MANAGEMENT
