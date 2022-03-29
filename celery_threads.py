@@ -6,6 +6,10 @@ from flask import Flask, jsonify
 from flask_restful import Api, Resource, reqparse
 import time
 import contextlib
+import os
+# from threading import Timer
+from deepspeech import *
+import wave
 
 ############################Flask app initialization#######################################
 app = Flask(__name__)
@@ -45,16 +49,16 @@ def read_wave(path):
    Takes the path, and returns (PCM audio data, sample rate).
    """
    with contextlib.closing(wave.open(path, 'rb')) as wf:
-       num_channels = wf.getnchannels()
-       assert num_channels == 1
-       sample_width = wf.getsampwidth()
-       assert sample_width == 2
-       sample_rate = wf.getframerate()
-       assert sample_rate in (8000, 16000, 32000)
-       frames = wf.getnframes()
-       pcm_data = wf.readframes(frames)
-       duration = frames / sample_rate
-       return pcm_data, sample_rate, duration
+        num_channels = wf.getnchannels()
+        assert num_channels == 1
+        sample_width = wf.getsampwidth()
+        assert sample_width == 2
+        sample_rate = wf.getframerate()
+        assert sample_rate in (8000, 16000, 32000)
+        frames = wf.getnframes()
+        pcm_data = wf.readframes(frames)
+        duration = frames / sample_rate
+        return pcm_data, sample_rate, duration
 
 ###########################generate frames in order to ensure that our audio is processed in reasonably sized clips #######################################
 class Frame(object):
@@ -188,14 +192,14 @@ Load the pre-trained model into the memory
 Returns a list [DeepSpeech Object, Model Load Time, Scorer Load Time]
 '''
 def load_model(models, scorer):
-   model_load_start = timer()
+   model_load_start = time.time()
    ds = Model(models)
-   model_load_end = timer() - model_load_start
+   model_load_end = time.time() - model_load_start
    print("Loaded model in %0.3fs." % (model_load_end))
  
-   scorer_load_start = timer()
+   scorer_load_start = time.time()
    ds.enableExternalScorer(scorer)
-   scorer_load_end = timer() - scorer_load_start
+   scorer_load_end = time.time() - scorer_load_start
    print('Loaded external scorer in %0.3fs.' % (scorer_load_end))
  
    return [ds, model_load_end, scorer_load_end]
@@ -208,13 +212,15 @@ Resolve directory path for the models and fetch each of them.
 Retunns a tuple containing each of the model files (pb, scorer)
 '''
 def resolve_models(dirName):
-   pb = glob.glob(dirName + "/*.pbmm")[0]
-   print("Found Model: %s" % pb)
+#    pb = glob.glob(dirName + "/*.pbmm")[0]
+    pb = 'models/deepspeech-0.9.3-models.pbmm'
+    print("Found Model: %s" % pb)
  
-   scorer = glob.glob(dirName + "/*.scorer")[0]
-   print("Found scorer: %s" % scorer)
+#    scorer = glob.glob(dirName + "/*.scorer")[0]
+    scorer = 'models/deepspeech-0.9.3-models.scorer'
+    print("Found scorer: %s" % scorer)
  
-   return pb, scorer
+    return pb, scorer
 
 '''
 Run Inference on input audio file
@@ -232,9 +238,9 @@ def stt(ds, audio, fs):
  
    # Run Deepspeech
    print('Running inference...')
-   inference_start = timer()
+   inference_start = time.time()
    output = ds.stt(audio)
-   inference_end = timer() - inference_start
+   inference_end = time.time() - inference_start
    inference_time += inference_end
    print('Inference took %0.3fs for %0.3fs audio file.' % (inference_end, audio_length))
  
@@ -246,10 +252,11 @@ def stt(ds, audio, fs):
 def transcribe():
     # need audio, aggressive, and model
     # Point to a path containing the pre-trained models & resolve ~ if used
-    model = './models/v0.9.3'
-    dirName = os.path.expanduser(model)
+    # model = 'models/'
+    # dirName = os.path.expanduser(model)
+    dirName = 'ec530-monitor-patients-platform/models'
 
-    audio = './audio/Test1.wav'
+    audio = 'audio/Test1.wav'
     aggressive = 1 #input("What level of non-voice filtering would you like? (0-3)")
 
     # Resolve all the paths of model files
@@ -293,7 +300,7 @@ class Transcribe(Resource):
         transcribe.apply_async()
 
 
-api.add_resource(UploadMessage, "/transcribe")
+api.add_resource(Transcribe, "/transcribe")
 
 if __name__=="__main__":
     app.run(debug=True)
