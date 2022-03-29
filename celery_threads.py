@@ -249,7 +249,7 @@ def transcribe():
     model = './models/v0.9.3'
     dirName = os.path.expanduser(model)
 
-    audio = './audio/test.wav'
+    audio = './audio/Test1.wav'
     aggressive = 1 #input("What level of non-voice filtering would you like? (0-3)")
 
     # Resolve all the paths of model files
