@@ -27,11 +27,7 @@ Every time I submit an API request a new task or job will be added to the queue 
 The code is simple, it has three functions that sleep for 6 seconds and then are finished. The functions are called from my API methods. To test the API request I am using Postman as I used for the other branches and modules of this project. 
 
 ## Celery worker 
-Below is an image of the celery worker started. We can see how the tasks are queued and processed. The print statements I added inside the functions code to track in the celery worker's console. 
-
-![Celery Worker](/images/celery-worker-started.png)
-
-In the next image we can see the multi thread queue in action through the celery worker
+Below we can see the multi thread queue in action through the celery worker
 
 ![Celery Worker](/images/stubs-multi-thread-celery.png)
 
@@ -46,4 +42,24 @@ The models were downloaded from
 - [.pbmm file](https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm)
 - [.scorer file](https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer)
 
-I am using a tutorial as my 3rd party implementation of deepspeech. All code is referenced from [Here](https://www.assemblyai.com/blog/deepspeech-for-dummies-a-tutorial-and-overview-part-1/)
+I am using a tutorial as my 3rd party implementation of deepspeech. All code is referenced from [Here](https://lindevs.com/speech-to-text-using-deepspeech/)
+
+The .wav files that are passed to convert to text need to have a specific format:
+- sample rate: 16khz
+- number of channels: 1
+
+On mac where I was recording the audio the sample rate can only be 44khz or higher so I used *sox* to convert my .wav files to the correct sample rate. 
+
+The model is succesful for the most part, however background noise and accent in the voice has an effect. Below we can see three different tests that returned text almost all correct. 
+
+The first image shows an instance of a slow and less noisy audio and the results is all correct nesides my name (which I beleive my accent had a part on this). 
+
+![Test 1](/images/speech-to-text-1.png)
+
+The second try is an instance of a very fast talk audio. 
+
+![Test 2](/images/speech-to-text-2.png)
+
+The last try is an instance of an audio with more background noise. 
+
+![Test 3](/images/speech-to-text-3.png)
