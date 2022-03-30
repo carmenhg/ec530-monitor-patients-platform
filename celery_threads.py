@@ -48,7 +48,7 @@ def transcribe():
     
     modelPath = 'models/deepspeech-0.9.3-models.pbmm'
     scorerPath = 'models/deepspeech-0.9.3-models.scorer'
-    audioPath = 'audio/test_16.wav'
+    audioPath = 'audio/test_noise_16.wav'
     
     ds = Model(modelPath)
     ds.enableExternalScorer(scorerPath)
