@@ -7,9 +7,9 @@ from flask_restful import Api, Resource, reqparse
 import time
 import contextlib
 import os
-# from threading import Timer
-from deepspeech import *
 import wave
+from deepspeech import Model
+import numpy as np
 
 ############################Flask app initialization#######################################
 app = Flask(__name__)
@@ -250,45 +250,58 @@ def stt(ds, audio, fs):
 # Add the celery decorator 
 @celery.task()
 def transcribe():
-    # need audio, aggressive, and model
-    # Point to a path containing the pre-trained models & resolve ~ if used
-    # model = 'models/'
-    # dirName = os.path.expanduser(model)
-    dirName = 'ec530-monitor-patients-platform/models'
+    
+    modelPath = 'models/deepspeech-0.9.3-models.pbmm'
+    scorerPath = 'models/deepspeech-0.9.3-models.scorer'
+    audioPath = 'audio/test.wav'
+    
+    ds = Model(modelPath)
+    ds.enableExternalScorer(scorerPath)
+    fin = wave.open(audioPath, 'rb')
+    frames = fin.readframes(fin.getnframes())
+    audio = np.frombuffer(frames, np.int16)
+    text = ds.stt(audio)
+    print(text)
+# def transcribe():
+#     # need audio, aggressive, and model
+#     # Point to a path containing the pre-trained models & resolve ~ if used
+#     # model = 'models/'
+#     # dirName = os.path.expanduser(model)
+#     dirName = 'ec530-monitor-patients-platform/models'
 
-    audio = 'audio/Test1.wav'
-    aggressive = 1 #input("What level of non-voice filtering would you like? (0-3)")
+#     audio = 'audio/test.wav'
+#     aggressive = 1 #input("What level of non-voice filtering would you like? (0-3)")
 
-    # Resolve all the paths of model files
-    output_graph, scorer = resolve_models(dirName)
+#     # Resolve all the paths of model files
+#     output_graph, scorer = resolve_models(dirName)
 
-    # Load output_graph, alphabet and scorer
-    model_retval = load_model(output_graph, scorer)
+#     # Load output_graph, alphabet and scorer
+#     model_retval = load_model(output_graph, scorer)
 
-    title_names = ['Filename', 'Duration(s)', 'Inference Time(s)', 'Model Load Time(s)', 'Scorer Load Time(s)']
-    print("\n%-30s %-20s %-20s %-20s %s" % (title_names[0], title_names[1], title_names[2], title_names[3], title_names[4]))
+#     title_names = ['Filename', 'Duration(s)', 'Inference Time(s)', 'Model Load Time(s)', 'Scorer Load Time(s)']
+#     print("\n%-30s %-20s %-20s %-20s %s" % (title_names[0], title_names[1], title_names[2], title_names[3], title_names[4]))
 
-    inference_time = 0.0
+#     inference_time = 0.0
 
-    waveFile = audio
-    segments, sample_rate, audio_length = vad_segment_generator(waveFile, aggressive)
-    f = open(waveFile.rstrip(".wav") + ".txt", 'w')
-    print("Saving Transcript @: %s" % waveFile.rstrip(".wav") + ".txt")
-    for i, segment in enumerate(segments):
-        # Run deepspeech on the chunk that just completed VAD
-        print("Processing chunk %002d" % (i,))
-        audio = np.frombuffer(segment, dtype=np.int16)
-        output = stt(model_retval[0], audio, sample_rate)
-        inference_time += output[1]
-        print("Transcript: %s" % output[0])
+#     waveFile = audio
+#     segments, sample_rate, audio_length = vad_segment_generator(waveFile, aggressive)
+#     f = open(waveFile.rstrip(".wav") + ".txt", 'w')
+#     print("Saving Transcript @: %s" % waveFile.rstrip(".wav") + ".txt")
+#     for i, segment in enumerate(segments):
+#         # Run deepspeech on the chunk that just completed VAD
+#         print("Processing chunk %002d" % (i,))
+#         audio = np.frombuffer(segment, dtype=np.int16)
+#         output = stt(model_retval[0], audio, sample_rate)
+#         inference_time += output[1]
+#         print("Transcript: %s" % output[0])
 
-        f.write(output[0] + " ")
+#         f.write(output[0] + " ")
 
-    # Summary of the files processed
-    f.close()
+#     # Summary of the files processed
+#     f.close()
 
-    # Extract filename from the full file path
-    filename, ext = os.path.split(os.path.basename(waveFile))
+#     # Extract filename from the full file path
+#     filename, ext = os.path.split(os.path.basename(waveFile))
 
 
 

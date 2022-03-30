@@ -5,3 +5,4 @@ flower
 deepspeech
 webrtcvad 
 pyqt5
+sox
