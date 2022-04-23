@@ -2,6 +2,7 @@
 import json
 import string
 import random
+import re
 
 #############################################################################################################################
 
@@ -126,59 +127,50 @@ def assign_device(device_id, user_id):
 
 
 #############################################################################################################################
-#This function pushes data into Database(soon to come) 
+#This function checks incoming data from device (Healthkit) from the mobile application
 #Data is received in the form of a json dict with specified parameters
+"""
+This function is modified to work with Healthkit input data. It is tailored to data that is collected 
+with a mobile app
+"""
 #Format is as follow 
 """
 {
-    "device_id": string,
-    "user_id": string,
+    "device_id": string ,
+    "user_id": string ,
     "type": string,
-    "measurement": string,
+    "measurement": float,
     "timestamp": string
 }
 """
+#Device ID and user ID need to be included but they are checked using Firebase auth 
 
-#Output: dict with values confirming that the data was saved 
+#Output: tuple of OK/NOT OK , data to be saved on firebase db
 
 def push_data(device_id, user_id, device_type, measurement, timestamp):
 
     # dict to hold data to save which is coming from args input, so they get checked for missing data already
-    to_append = {"user_id": user_id, "device_id": device_id, "type" : device_type, "measurement" : measurement, "timestamp" : timestamp}
+    data = {"device_id": device_id,"user_id": user_id ,"type" : device_type, "measurement" : measurement, "timestamp" : timestamp}
 
-    #need to check that both device_id and user_id are valid, meaning the user exists and that the device is assigned to this user
+    #need to check that the correct data is passed in 
+    #need to do security checks 
 
-    devices_f = open('saved_data/registered_devices_output.json')
-    registered_devices = json.load(devices_f)
-    devices_f.close()
+    #device needs to have an id and that id needs to be registered in our db, should I do this check here or in firebase on the app backend?
 
-    for element in registered_devices:
-        if(device_id == element["device_id"]):
-            #check if device is assigned to a patient
-            if user_id not in element:
-                return False, json.loads('{"response": "Device is not assigned to any user"}')
-            #check if it is the correct patient 
-            elif user_id != element["user_id"]:
-                return False, json.loads('{"response": "Device is not assigned to this patient "}')
-            else:
-                #finally save the data into our DB(soon to come), json output file for now
-                #open file to read
-                temp_f = open("saved_data/push_data_output.json")
-                # returns JSON object as a dictionary
-                temp_data = json.load(temp_f)
-                #close file
-                temp_f.close()
-
-                temp_data.append(to_append)
+    #chack that measurement is a float 
+    if(type(measurement) != float):
+        return False
+    else:
+        #if operation was successful return an okay message
+        #no need to return the data cuz it's passed in through the app anyways 
+        return True
+    
 
 
-                with open("saved_data/push_data_output.json", "r+") as file:
-                    json.dump(temp_data, file, indent=4,  separators=(',',': '))
 
-                file.close()
+    
 
-                #if operation was successful return an okay message
-                return True, to_append
+    
 
 #############################################################################################################################
 

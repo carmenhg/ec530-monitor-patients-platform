@@ -6,59 +6,59 @@ import device
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///DeviceModule.db' 
-db = SQLAlchemy(app)
-ma = Marshmallow(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///DeviceModule.db' 
+# db = SQLAlchemy(app)
+# ma = Marshmallow(app)
 api = Api(app)
 
 #Database models
 #Device model: used for registering a device
-class Device(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    MAC = db.Column(db.String)
-    type = db.Column(db.String)
+# class Device(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     MAC = db.Column(db.String)
+#     type = db.Column(db.String)
 
 #Device-User model: used for assigning devices to users
-class DeviceUser(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
-    device_id= db.Column(db.Integer)
+# class DeviceUser(db.Model):
+#     user_id = db.Column(db.Integer, primary_key=True)
+#     device_id= db.Column(db.Integer)
 
 #Measurement model: used for saving device measured data for a user (patient)
-class DeviceMeasurement(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
-    device_id = db.Column(db.Integer)
-    device_type = db.Column(db.String)
-    measurement = db.Column(db.String)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+# class DeviceMeasurement(db.Model):
+#     user_id = db.Column(db.Integer, primary_key=True)
+#     device_id = db.Column(db.Integer)
+#     device_type = db.Column(db.String)
+#     measurement = db.Column(db.String)
+    # timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 #Schemas
 #Here I can choose which values users will be able to see from the tables. 
-class DeviceSchema(ma.ModelSchema):
-    class Meta:
-        # fields = ("id", "MAC", "type")
-        model = Device
-        sqla_session = db.session
+# class DeviceSchema(ma.ModelSchema):
+#     class Meta:
+#         # fields = ("id", "MAC", "type")
+#         model = Device
+#         sqla_session = db.session
 
-device_schema = DeviceSchema()
-devices_schema = DeviceSchema(many=True)
+# device_schema = DeviceSchema()
+# devices_schema = DeviceSchema(many=True)
 
-class DeviceUserSchema(ma.ModelSchema):
-    class Meta:
-        # fields = ("user_id", "device_id")
-        model = DeviceMeasurement
-        sqla_session = db.session
+# class DeviceUserSchema(ma.ModelSchema):
+#     class Meta:
+#         # fields = ("user_id", "device_id")
+#         model = DeviceMeasurement
+#         sqla_session = db.session
 
-deviceUser_schema = DeviceUserSchema()
-devicesUser_schema = DeviceUserSchema(many=True)
+# deviceUser_schema = DeviceUserSchema()
+# devicesUser_schema = DeviceUserSchema(many=True)
 
-class DeviceMeasurementSchema(ma.ModelSchema):
-    class Meta:
-        # fields = ("user_id", "device_id", "device_type", "measurement", "timestamp")
-        model = DeviceMeasurement
-        sqla_session = db.session
+# class DeviceMeasurementSchema(ma.ModelSchema):
+#     class Meta:
+#         # fields = ("user_id", "device_id", "device_type", "measurement", "timestamp")
+#         model = DeviceMeasurement
+#         sqla_session = db.session
 
-deviceMeasurement_schema = DeviceMeasurementSchema()
-devicesMeasurement_schema = DeviceMeasurementSchema(many=True)
+# deviceMeasurement_schema = DeviceMeasurementSchema()
+# devicesMeasurement_schema = DeviceMeasurementSchema(many=True)
 
 # Parser will make sure that the predetremined parameters for the PUT and GET methods are met
 # So all the attributes I need to call the functions will be checked before trying to push the data 
@@ -69,6 +69,8 @@ data_pull_args.add_argument("user_id", type=str, help="Must provide user id")
 
 #args for pushing new data 
 data_push_args = reqparse.RequestParser()
+#device id and user id are gonna be checked against firebase not in here. 
+#device id doesn't really apply here
 data_push_args.add_argument("device_id", type=str, help="Must provide device id", required=True)
 data_push_args.add_argument("user_id", type=str, help="Must provide user id", required=True)
 data_push_args.add_argument("device_type", type=str, help="Must provide device type", required=True)
@@ -117,11 +119,11 @@ class DeviceData(Resource):
     
     def post(self):
         args = data_push_args.parse_args()
-        success, data = device.push_data(args["device_id"], args["user_id"], args["device_type"], args["measurement"], args["timestamp"])
+        success = device.push_data(args["device_id"], args["user_id"], args["device_type"], args["measurement"], args["timestamp"])
         if success == True:
-            return data,200
+            return 200
         elif success == False:
-            return data
+            return "Failed"
 
 api.add_resource(RegisterDevice, "/register")
 api.add_resource(DeviceData, "/data")
