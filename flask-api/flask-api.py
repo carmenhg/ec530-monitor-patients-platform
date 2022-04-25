@@ -10,7 +10,7 @@ app = Flask(__name__)
 api = Api(app)
 
 #mongodb connection
-CONNECTION_STRING = "mongodb+srv://carmenhg:PatalargaHG0207@cluster0.qol4e.mongodb.net/device?retryWrites=true&w=majority"
+CONNECTION_STRING = "<string>"
 client = pymongo.MongoClient(CONNECTION_STRING)
 #Users collections 
 db = client.get_database('auth')
