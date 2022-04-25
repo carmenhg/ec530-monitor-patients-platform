@@ -5,12 +5,14 @@ from pymongo import MongoClient
 from flask_pymongo import pymongo
 import device
 import db
+import os
 
 app = Flask(__name__)
 api = Api(app)
+app.secret_key = os.urandom(16)
 
 #mongodb connection
-CONNECTION_STRING = "<string>"
+CONNECTION_STRING = "mongodb+srv://carmenhg:PatalargaHG0207@cluster0.qol4e.mongodb.net/auth?retryWrites=true&w=majority"
 client = pymongo.MongoClient(CONNECTION_STRING)
 #Users collections 
 db = client.get_database('auth')
@@ -30,9 +32,9 @@ def login():
     login_user = users.find_one({'username' : request.form['username']})
 
     if login_user:
-        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
+        if request.form['pass'] == login_user['password']:
             session['username'] = request.form['username']
-            return redirect(url_for('index'))
+            return redirect(url_for('home'))
 
     return 'Invalid username/password combination'
 
@@ -41,11 +43,9 @@ def login():
 def register():
     if request.method == 'POST':
         existing_user = users.find_one({'username' : request.form['username']})
-        print("FOUND USER")
 
         if existing_user is None:
-            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
-            users.insert_one({'username' : request.form['username'], 'password' : hashpass})
+            users.insert_one({'username' : request.form['username'], 'password' : request.form['pass'], 'role' : request.form['role']})
             session['username'] = request.form['username']
             return redirect(url_for('index'))
         
@@ -53,6 +53,16 @@ def register():
 
     return render_template('register.html')
 
+
+@app.route('/logout', methods=['POST', 'GET'])
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
+@app.route('/home', methods=['GET'])
+def home():
+    # depening on the role, screen will display different things 
+    return "Home screen"
+    
 if __name__=="__main__":
-    app.secret_key = 'ec530projectsecretkey'
     app.run(debug=True)
