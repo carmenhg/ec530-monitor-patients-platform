@@ -1,10 +1,9 @@
-from flask import Flask, url_for, request, session, redirect, render_template
-from flask_restful import abort
-from flask_restx import Api, Resource, reqparse
+from flask import Flask, render_template, url_for, request, session, redirect
+import bcrypt
+from flask_restx import Api
 from pymongo import MongoClient
 from flask_pymongo import pymongo
 import device
-import user_auth
 import db
 
 app = Flask(__name__)
@@ -13,116 +12,47 @@ api = Api(app)
 #mongodb connection
 CONNECTION_STRING = "mongodb+srv://carmenhg:PatalargaHG0207@cluster0.qol4e.mongodb.net/device?retryWrites=true&w=majority"
 client = pymongo.MongoClient(CONNECTION_STRING)
-
-#Register route
-@api.route('/')
-class Index(Resource):
-    def index():
-        if 'username' in session:
-            return 'You are logged in as ' + session['username']
-
-        return render_template('index.html')
-
-#Register route
-@api.route('/register-user')
-class RegisterUser(Resource):
-    
-    def post(self):
-        db = client.get_database('auth')
-        users = pymongo.collection.Collection(db, 'users')
-        login_user = users.find_one({'name' : request.form['username']})
-
-        if login_user:
-            if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
-                session['username'] = request.form['username']
-                return redirect(url_for('index'))
-
-        return 'Invalid username/password combination'
+#Users collections 
+db = client.get_database('auth')
+users = pymongo.collection.Collection(db, 'users')
         
-#Login Route 
-@api.route('/login-user')
-class LoginUser(Resource):
-    
-    def post(self):
+# @api.route('/index')
+@app.route('/index')
+def index():
+    if 'username' in session:
+        return 'You are logged in as ' + session['username']
 
-#Logout Route 
-@api.route('/logout-user')
-class LogoutUser(Resource):
-    
-    def post(self):
+    return render_template('index.html')
 
-# Parser will make sure that the predetremined parameters for the PUT and GET methods are met
-# So all the attributes I need to call the functions will be checked before trying to push the data 
-#args for getting data 
-data_pull_args = reqparse.RequestParser()
-data_pull_args.add_argument("device_id", type=str, help="Must provide device id")
-data_pull_args.add_argument("user_id", type=str, help="Must provide user id")
+# @api.route('/login')
+@app.route('/login', methods=['POST'])
+def login():
+    login_user = users.find_one({'username' : request.form['username']})
 
-#args for pushing new data 
-data_push_args = reqparse.RequestParser()
-#device id and user id are gonna be checked against firebase not in here. 
-#device id doesn't really apply here
-data_push_args.add_argument("device_id", type=str, help="Must provide device id", required=True)
-data_push_args.add_argument("user_id", type=str, help="Must provide user id", required=True)
-data_push_args.add_argument("device_type", type=str, help="Must provide device type", required=True)
-data_push_args.add_argument("measurement", type=str, help="Must provide device measurement", required=True)
-data_push_args.add_argument("timestamp", type=str, help="Must provide measurement timestamp", required=True)
+    if login_user:
+        if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
 
-#args for registering a device function 
-reg_dev_args = reqparse.RequestParser()
-reg_dev_args.add_argument("device_type", type=str, help="Must provide device type", required=True)
-reg_dev_args.add_argument("device_identifier", type=str, help="Must provide device identifier", required=True)
+    return 'Invalid username/password combination'
 
-#args for assign a device function 
-assign_dev_args = reqparse.RequestParser()
-assign_dev_args.add_argument("device_id", type=str, help="Must provide device id", required=True)
-assign_dev_args.add_argument("user_id", type=str, help="Must provide user id", required=True)
+# @api.route('/register')
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        existing_user = users.find_one({'username' : request.form['username']})
+        print("FOUND USER")
 
-@api.route('/register-device')
-class RegisterDevice(Resource):
-    @api.doc(parser=reg_dev_args)
-    def post(self):
-        args = reg_dev_args.parse_args()
-        success, data = device.register_device(args["device_type"], args["device_identifier"])
-        if success == True:
-            return data,200
-        elif success == False:
-            return data
+        if existing_user is None:
+            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
+            users.insert_one({'username' : request.form['username'], 'password' : hashpass})
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
         
-    @api.doc(parser=assign_dev_args)
-    def put(self):
-        args = assign_dev_args.parse_args()
-        success, data = device.assign_device(args["device_id"], args["user_id"])
-        if success == True:
-            return data,200
-        elif success == False:
-            return data
+        return 'That username already exists!'
 
-@api.route('/data')
-class DeviceData(Resource):
-    @api.doc(parser=data_pull_args)
-    def get(self):
-        args = data_pull_args.parse_args()
-        success, data = device.pull_data(args["device_id"], args["user_id"])
-        if success == True:
-            return data,200
-        elif success == False:
-            return data
-    
-    @api.doc(parser=data_push_args)
-    def post(self):
-        args = data_push_args.parse_args()
-        success = device.push_data(args["device_id"], args["user_id"], args["device_type"], args["measurement"], args["timestamp"])
-        if success == True:
-            return 200
-        elif success == False:
-            return "Failed"
-
-# api.add_resource(RegisterDevice, "/register")
-# api.add_resource(DeviceData, "/data")
-
+    return render_template('register.html')
 
 if __name__=="__main__":
-    
-    app.run()
-    
+    app.secret_key = 'ec530projectsecretkey'
+    app.run(debug=True)
