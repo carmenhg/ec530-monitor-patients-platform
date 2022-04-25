@@ -1,64 +1,55 @@
-from flask import Flask
-from flask_restful import Api, Resource, reqparse, abort
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
+from flask import Flask, url_for, request, session, redirect, render_template
+from flask_restful import abort
+from flask_restx import Api, Resource, reqparse
+from pymongo import MongoClient
+from flask_pymongo import pymongo
 import device
-
+import user_auth
+import db
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///DeviceModule.db' 
-# db = SQLAlchemy(app)
-# ma = Marshmallow(app)
 api = Api(app)
 
-#Database models
-#Device model: used for registering a device
-# class Device(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     MAC = db.Column(db.String)
-#     type = db.Column(db.String)
+#mongodb connection
+CONNECTION_STRING = "mongodb+srv://carmenhg:PatalargaHG0207@cluster0.qol4e.mongodb.net/device?retryWrites=true&w=majority"
+client = pymongo.MongoClient(CONNECTION_STRING)
 
-#Device-User model: used for assigning devices to users
-# class DeviceUser(db.Model):
-#     user_id = db.Column(db.Integer, primary_key=True)
-#     device_id= db.Column(db.Integer)
+#Register route
+@api.route('/')
+class Index(Resource):
+    def index():
+        if 'username' in session:
+            return 'You are logged in as ' + session['username']
 
-#Measurement model: used for saving device measured data for a user (patient)
-# class DeviceMeasurement(db.Model):
-#     user_id = db.Column(db.Integer, primary_key=True)
-#     device_id = db.Column(db.Integer)
-#     device_type = db.Column(db.String)
-#     measurement = db.Column(db.String)
-    # timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+        return render_template('index.html')
 
-#Schemas
-#Here I can choose which values users will be able to see from the tables. 
-# class DeviceSchema(ma.ModelSchema):
-#     class Meta:
-#         # fields = ("id", "MAC", "type")
-#         model = Device
-#         sqla_session = db.session
+#Register route
+@api.route('/register-user')
+class RegisterUser(Resource):
+    
+    def post(self):
+        db = client.get_database('auth')
+        users = pymongo.collection.Collection(db, 'users')
+        login_user = users.find_one({'name' : request.form['username']})
 
-# device_schema = DeviceSchema()
-# devices_schema = DeviceSchema(many=True)
+        if login_user:
+            if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
+                session['username'] = request.form['username']
+                return redirect(url_for('index'))
 
-# class DeviceUserSchema(ma.ModelSchema):
-#     class Meta:
-#         # fields = ("user_id", "device_id")
-#         model = DeviceMeasurement
-#         sqla_session = db.session
+        return 'Invalid username/password combination'
+        
+#Login Route 
+@api.route('/login-user')
+class LoginUser(Resource):
+    
+    def post(self):
 
-# deviceUser_schema = DeviceUserSchema()
-# devicesUser_schema = DeviceUserSchema(many=True)
-
-# class DeviceMeasurementSchema(ma.ModelSchema):
-#     class Meta:
-#         # fields = ("user_id", "device_id", "device_type", "measurement", "timestamp")
-#         model = DeviceMeasurement
-#         sqla_session = db.session
-
-# deviceMeasurement_schema = DeviceMeasurementSchema()
-# devicesMeasurement_schema = DeviceMeasurementSchema(many=True)
+#Logout Route 
+@api.route('/logout-user')
+class LogoutUser(Resource):
+    
+    def post(self):
 
 # Parser will make sure that the predetremined parameters for the PUT and GET methods are met
 # So all the attributes I need to call the functions will be checked before trying to push the data 
@@ -87,9 +78,9 @@ assign_dev_args = reqparse.RequestParser()
 assign_dev_args.add_argument("device_id", type=str, help="Must provide device id", required=True)
 assign_dev_args.add_argument("user_id", type=str, help="Must provide user id", required=True)
 
-
+@api.route('/register-device')
 class RegisterDevice(Resource):
-
+    @api.doc(parser=reg_dev_args)
     def post(self):
         args = reg_dev_args.parse_args()
         success, data = device.register_device(args["device_type"], args["device_identifier"])
@@ -98,7 +89,7 @@ class RegisterDevice(Resource):
         elif success == False:
             return data
         
-    
+    @api.doc(parser=assign_dev_args)
     def put(self):
         args = assign_dev_args.parse_args()
         success, data = device.assign_device(args["device_id"], args["user_id"])
@@ -107,8 +98,9 @@ class RegisterDevice(Resource):
         elif success == False:
             return data
 
+@api.route('/data')
 class DeviceData(Resource):
-
+    @api.doc(parser=data_pull_args)
     def get(self):
         args = data_pull_args.parse_args()
         success, data = device.pull_data(args["device_id"], args["user_id"])
@@ -117,6 +109,7 @@ class DeviceData(Resource):
         elif success == False:
             return data
     
+    @api.doc(parser=data_push_args)
     def post(self):
         args = data_push_args.parse_args()
         success = device.push_data(args["device_id"], args["user_id"], args["device_type"], args["measurement"], args["timestamp"])
@@ -125,9 +118,11 @@ class DeviceData(Resource):
         elif success == False:
             return "Failed"
 
-api.add_resource(RegisterDevice, "/register")
-api.add_resource(DeviceData, "/data")
+# api.add_resource(RegisterDevice, "/register")
+# api.add_resource(DeviceData, "/data")
+
 
 if __name__=="__main__":
-    app.run(debug=True)
+    
+    app.run()
     
