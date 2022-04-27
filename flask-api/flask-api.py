@@ -13,7 +13,7 @@ api = Api(app)
 app.secret_key = os.urandom(16)
 
 #mongodb connection
-CONNECTION_STRING = "mongodb+srv://carmenhg:PatalargaHG0207@cluster0.qol4e.mongodb.net/auth?retryWrites=true&w=majority"
+CONNECTION_STRING = "string"
 client = pymongo.MongoClient(CONNECTION_STRING)
 #Users collections 
 db_users = client.get_database('auth')
