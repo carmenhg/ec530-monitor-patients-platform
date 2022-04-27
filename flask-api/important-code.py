@@ -95,4 +95,136 @@ api.add_resource(DeviceData, "/data", endpoint = 'data')
 api.add_resource(Index, "/index", endpoint = 'index')
 api.add_resource(LoginUser, "/login", endpoint = 'login')
 
+##### Version with just Flask #######
+from flask import Flask, render_template, url_for, request, session, redirect, flash
+import bcrypt
+from flask_restx import Api
+from pymongo import MongoClient
+from flask_pymongo import pymongo
+import device
+import db
+import os
+import random
+
+app = Flask(__name__)
+api = Api(app)
+app.secret_key = os.urandom(16)
+
+#mongodb connection
+CONNECTION_STRING = "mongodb+srv://carmenhg:PatalargaHG0207@cluster0.qol4e.mongodb.net/auth?retryWrites=true&w=majority"
+client = pymongo.MongoClient(CONNECTION_STRING)
+#Users collections 
+db_users = client.get_database('auth')
+users = pymongo.collection.Collection(db_users, 'users')
+assign_users = pymongo.collection.Collection(db_users, 'assigned')
+
+#Device collections 
+db_device = client.get_database('device')
+reg_dev = pymongo.collection.Collection(db_device, 'registered')
+assig_dev = pymongo.collection.Collection(db_device, 'assigned')
+measurements = pymongo.collection.Collection(db_device, 'measurements')
+        
+@api.route('/index')
+@app.route('/index')
+def index():
+    if 'username' in session:
+        return 'You are logged in as ' + session['username']
+
+    return render_template('index.html')
+
+# @api.route('/login')
+@app.route('/login', methods=['POST'])
+def login():
+    login_user = users.find_one({'username' : request.form['username']})
+    current_user_role = login_user['role']
+
+    if login_user:
+        if request.form['pass'] == login_user['password']:
+            session['username'] = request.form['username']
+            if current_user_role == 'patient':
+                return redirect(url_for('data_push'))
+
+            if current_user_role == 'mp' or current_user_role == 'nurse':
+                return redirect(url_for('assign_device'))
+
+            if  current_user_role == 'admin':
+                return redirect(url_for('home'))
+
+    return 'Invalid username/password combination'
+
+# @api.route('/register')
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        existing_user = users.find_one({'username' : request.form['username']})
+
+        if existing_user is None:
+            users.insert_one({'username' : request.form['username'], 'password' : request.form['pass'], 'role' : request.form['role']})
+            session['username'] = request.form['username']
+            return redirect(url_for('index'))
+        
+        return 'That username already exists!'
+
+    return render_template('register.html')
+
+
+@app.route('/logout', methods=['POST', 'GET'])
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    # register device
+    if request.method == 'POST':
+        existing_dev = reg_dev.find_one({'device_id' : request.form['device_id']})
+        if existing_dev is None:
+            reg_dev.insert_one({'device_id' : request.form['device_id'], 'device_type' : request.form['device_type']})
+            return 'Success'
+        else:
+            return 'Device is already registered'
+    return render_template('homeAdmin.html')
+
+
+@app.route('/assign_patients', methods=['GET', 'POST'])
+def assign_patients():
+    #assign patient
+    if request.method == 'POST':
+        #Need to check that users are registered and their roles 
+        #would be better to add a drop down menu for the available users to assign
+        #that would omit the need for the check
+        assign_users.insert_one({'patient': request.form['assignPatient'], 'MPs' : request.form['assignMP']})
+        return 'Success'
+
+    mps = users.find( {"role" : 'mp'}, {"username" : 1} )
+
+    return render_template('assignPatients.html', rows=mps)
+    
+
+@app.route('/assign_device', methods=['GET', 'POST'])
+def assign_device():
+    #assign device
+    if request.method == 'POST':
+        #NEED TO ERROR CHECK THAT USER IS A PATIENT BEFORE ASSINING DOCTOR TO THEM
+        #if I have drop down menus then it will basically check for me
+        users.find_one_and_update({'username': request.form['assignPatient']},{ '$set': { "Devices" : request.form['assignDevice']} })
+        return 'Success'
+
+    return render_template('homeMP.html')
+
+@app.route('/data_push', methods=['GET', 'POST'])
+def data_push():
+    #assign patient
+    if request.method == 'POST':
+        #THIS DATA NEEDS TO BE ERROR CHECKED BEFORE 
+        #device and user info can be drop down menus
+        #measurement and timestamp need to follow a specific format depending on device type?
+        measurements.insert_one({'device_id' : request.form['device_id'], 'device_type' : request.form['device_type'], 'user_id' : request.form['user_id'], 'measurement' : request.form['measurement'], 'timestamp': request.form['timestamp']})
+        return 'Success'
+
+    return render_template('homePatient.html')
+    
+
+
+
     

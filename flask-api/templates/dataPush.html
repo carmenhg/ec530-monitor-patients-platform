@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block body %} 
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <form method=POST action="{{ url_for('data_push') }}">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Device ID</label>
+                    <input type="text" class="form-control" name="device_id" placeholder="Device ID"> 
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Device Type</label>
+                    <input type="text" class="form-control" name="device_type" placeholder="Device type">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">User ID</label>
+                    <input type="text" class="form-control" name="user_id" placeholder="User ID">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Measurement</label>
+                    <input type="text" class="form-control" name="measurement" placeholder="Measurement">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Timestamp</label>
+                    <input type="text" class="form-control" name="timestamp" placeholder="timestamp">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Add</button>
+            </form>
+            <br>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
