@@ -66,6 +66,41 @@ API definitions:
             - None 
 
 ## Database Design
+I am using MongoDB for this project. I have two databases: *auth* and *device*. 
+### *auth* 
+This db has 2 Collection 
+- users
+
+    Below is an image of the fields that this collection includes. 
+
+    ![users](/images/users.png)
+
+- assigned
+
+    Below is an image of the fields.
+
+    ![assigned-users](/images/users-assigned.png)
+
+### *device* 
+This db has 3 Collection 
+- registered
+
+    Below is an image of the fields that this collection includes. 
+
+    ![reg](/images/device-registered.png)
+
+- assigned
+
+    Below is an image of the fields.
+
+    ![assigned-dev](/images/device-assigned.png)
+
+- measurements
+
+    Below is an image of the fields.
+
+    ![data](/images/data.png)
+
 
 
 
