@@ -1,9 +1,12 @@
 {% extends "layout.html" %}
 {% block body %} 
 <div class="container">
+    <div class="navbar">
+        <a href="{{ url_for('home', role=session['role']) }}">Home</a>
+    </div>
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
-            <form method=POST action="{{ url_for('home') }}">
+            <form method=POST action="{{ url_for('register_device') }}">
                 <div class="form-group">
                     <label for="exampleInputEmail1">Device ID</label>
                     <input type="text" class="form-control" name="device_id" placeholder="Device ID"> 
@@ -15,12 +18,6 @@
                 <button type="submit" class="btn btn-primary btn-block">Register</button>
             </form>
             <br>
-            <div>
-                <a href="{{ url_for('assign_patients') }}">Assign patients </a>
-            </div>
-            <div>
-                <a href="{{ url_for('logout') }}">Log Out</a>
-            </div>
         </div>
     </div>
 </div>

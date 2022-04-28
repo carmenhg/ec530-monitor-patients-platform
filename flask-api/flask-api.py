@@ -13,8 +13,9 @@ api = Api(app)
 app.secret_key = os.urandom(16)
 
 #mongodb connection
-CONNECTION_STRING = "string"
+CONNECTION_STRING = ""
 client = pymongo.MongoClient(CONNECTION_STRING)
+
 #Users collections 
 db_users = client.get_database('auth')
 users = pymongo.collection.Collection(db_users, 'users')
@@ -26,14 +27,16 @@ reg_dev = pymongo.collection.Collection(db_device, 'registered')
 assig_dev = pymongo.collection.Collection(db_device, 'assigned')
 measurements = pymongo.collection.Collection(db_device, 'measurements')
         
-@api.route('/index')
-class Index(Resource):
+@api.route('/login')
+class login(Resource):
     def get(self):
         if 'username' in session:
+            print(session)
             return 'You are logged in as ' + session['username']
+            
         else:
             headers = {'Content-Type': 'text/html'}
-            return make_response(render_template('index.html'),200,headers)
+            return make_response(render_template('login.html'),200,headers)
 
 @api.route('/login')
 class Login(Resource):
@@ -44,15 +47,8 @@ class Login(Resource):
         if login_user:
             if request.form['pass'] == login_user['password']:
                 session['username'] = request.form['username']
-                return redirect(url_for('home', role=current_user_role))
-                # if current_user_role == 'patient':
-                #     return redirect(url_for('data_push'))
-
-                # if current_user_role == 'mp' or current_user_role == 'nurse':
-                #     return redirect(url_for('assign_device'))
-
-                # if  current_user_role == 'admin':
-                #     return redirect(url_for('home'))
+                session['role'] = current_user_role
+                return redirect(url_for('home', role=session['role']))
 
         return 'Invalid username/password combination'
 
@@ -64,7 +60,7 @@ class Register(Resource):
         if existing_user is None:
             users.insert_one({'username' : request.form['username'], 'password' : request.form['pass'], 'role' : request.form['role']})
             session['username'] = request.form['username']
-            return redirect(url_for('index'))
+            return redirect(url_for('login'))
         
         return 'That username already exists!'
     
@@ -76,15 +72,12 @@ class Register(Resource):
 class Logout(Resource):
     def get(self):
         session.pop('username', None)
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
 
 @api.route('/home')
 class Home(Resource):
     
     def get(self):
-        # login_user = users.find_one({'username' : request.form['username']})
-        # current_user_role = login_user['role']
-        # user = session["username"]
         headers = {'Content-Type': 'text/html'}
         return make_response(render_template('home.html', user=request.args.get('role')),200,headers)
 
@@ -98,14 +91,14 @@ class RegisterDevice(Resource):
         # register device
         existing_dev = reg_dev.find_one({'device_id' : request.form['device_id']})
         if existing_dev is None:
-            reg_dev.insert_one({'device_id' : request.form['device_id'], 'device_type' : request.form['device_type']})
+            reg_dev.insert_one({'device_id' : request.form['device_id'], 'device_type' : request.form['device_type'], "assigned": False})
             return 'Success'
         else:
             return 'Device is already registered'
     
     def get(self):
         headers = {'Content-Type': 'text/html'}
-        return make_response(render_template('homeAdmin.html'),200,headers)
+        return make_response(render_template('registerDevice.html'),200,headers)
 
 '''
 This function has preset values that can be selected, this will limit user input and errors that come with it.
@@ -114,11 +107,13 @@ This function has preset values that can be selected, this will limit user input
 class AssignPatients(Resource):
     def post(self):
        #assign patient to mp
+       #get values from user dropdown menu selction
         dropdown_values = list(request.form.values())
         mp = dropdown_values[0]
         patient = dropdown_values[1]
-        assign_users.insert_one({'patient': patient, 'MPs' : mp})
+        assign_users.insert_one({'patient':patient, 'mp':mp})
         return 'Success'
+        
 
     def get(self):
         mps = []
@@ -136,19 +131,37 @@ class AssignPatients(Resource):
     
 '''
 This function has preset values that can be selected, this will limit user input and errors that come with it.
-STILL LEFT TO IMPLEMENT 
 '''
 @api.route('/assign_device')
 class AssignDevice(Resource):
     def post(self):
         #assign device
-        users.find_one_and_update({'username': request.form['assignPatient']},{ '$set': { "Devices" : request.form['assignDevice']} })
+        #get values from user dropdown menu selction
+        dropdown_values = list(request.form.values())
+        device = dropdown_values[0]
+        patient = dropdown_values[1]
+        assig_dev.insert_one({'patient': patient, 'Device': device})
+        reg_dev.find_one_and_update({'device_id': device},{ '$set': { "assigned" : True} })
         return 'Success'
     
     def get(self):
-        headers = {'Content-Type': 'text/html'}
-        return make_response(render_template('homeMP.html'),200,headers)
+        devices = []
+        #only devices that were not previously assigned to a patient can be assigned to a new patient
+        devices_temp = reg_dev.find( {"assigned": False}, {"device_id" : 1, "device_type" : 1} )
+        for device in devices_temp:
+            devices.append(device['device_id'])
+        
+        patients = []
+        patients_temp = users.find( {"role" : 'patient'}, {"username" : 1} )
+        for patient in patients_temp:
+            patients.append(patient['username'])
 
+        headers = {'Content-Type': 'text/html'}
+        return make_response(render_template('assignDevice.html', devices=devices, patients=patients),200,headers)
+
+'''
+
+'''
 @api.route('/data_push')
 class DataPush(Resource):
     def post(self):
@@ -156,8 +169,21 @@ class DataPush(Resource):
         return 'Success'
 
     def get(self):
+        devices = []
+        devices_type = []
+        #only devices that are assigned to a patient can add data
+        devices_temp = reg_dev.find( {"assigned": True}, {"device_id" : 1, "device_type" : 1} )
+        for device in devices_temp:
+            devices.append(device['device_type'] + ': ' +device['device_id'])
+
+        # #for a given patient, only devices assigned to them can add data for them
+        # dropdown_values = list(request.form.values())
+        # device_id = dropdown_values[0].partition(":")[0]
+        # # patient = dropdown_values[1]
+        # patient = assig_dev.find_one({'device_id' : device})
+
         headers = {'Content-Type': 'text/html'}
-        return make_response(render_template('homePatient.html'),200,headers)
+        return make_response(render_template('dataPush.html', devices=devices),200,headers)
     
 if __name__=="__main__":
     app.run(debug=True)
