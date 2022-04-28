@@ -2,7 +2,14 @@
 
 Author: Carmen Hurtado 
 
-For a more detailed documentation of each API method please visit this repo's Wiki page [here](https://github.com/carmenhg/ec530-monitor-patients-platform/wiki)
+**API Documentation is made using Flask-restx Swagger**
+
+## Project Description
+A WEB application that uses a restful API to monitor patient data. It is a platform where administrators, medical professionals, and patients can manage device data. 
+
+## USER Interface
+This module registers users. All information needed is username, password, and role. The Web appliclation creates a session for each user to authenticate througout the process. 
+
 ## DEVICE Interface
 This module has 3 main objectives:
 - Register 3rd party devices in our system
@@ -20,12 +27,12 @@ This module has 3 main objectives:
 I have a folder that includes all the files with the functions for pull data, push data, and register devices as well as the test python file with the unit tests definitions. All this is under a folder named "test-pytest"
 
 ## For REST API with Flask
-I have created a different folder to hold all the files needed to build the RestFul API with Flask. I have copied the files for pull data, push data, register devices functions to this folder. I did this because importing files from a parent folder is very weird and I decided not to loose time figuring this out since this is just temporary for testing. 
+I have created a different folder to hold all the files needed to build the RestFul API with Flask. 
 File "flask-api.py" has all the routes and calls to the API. 
 Under the "test-postman" folder is a markdown documentation showing all my testing organization for the API calls as well as an explanation to the unit tests that I used. 
 
 ## Device Module Design 
-User stories (need to think of more scenarios that could happen): 
+User stories: 
 - Devices need to register into our system 
 - Devices can add new data from their readings 
 - User (MP, potentially patients) can see measurements from devices
@@ -58,29 +65,8 @@ API definitions:
         - ASSUMPTIONS:
             - None 
 
+## Database Design
 
-REST API:
-- Register_device POST 
-- Assign_device POST
-- Pull_data GET
-- Push_data POST
-
-What info do I need to store?:
-- Each device information after registration 
-    - Device given key
-    - User (device_id) that it is assigned to 
-    - CHANGE device_id TO user_id
-    - What type of measurements it takes
-        - Temp
-        - Blood pressure
-        - Weight
-        - Etc
-- When new data is entered
-    - User_id
-    - Type of measurement
-        - Can I get this value from previous saves when registering???
-    - Measurement data
-    - Timestamp 
 
 
 
