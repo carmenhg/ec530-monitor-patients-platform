@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, request, session, redirect, flash, make_response
 import bcrypt
-from flask_restx import Api, Resource
+from flask_restx import Api, Resource, reqparse
 from pymongo import MongoClient
 from flask_pymongo import pymongo
 import device
@@ -26,31 +26,34 @@ db_device = client.get_database('device')
 reg_dev = pymongo.collection.Collection(db_device, 'registered')
 assig_dev = pymongo.collection.Collection(db_device, 'assigned')
 measurements = pymongo.collection.Collection(db_device, 'measurements')
-        
-@api.route('/login')
-class login(Resource):
-    def get(self):
-        if 'username' in session:
-            print(session)
-            return 'You are logged in as ' + session['username']
-            
-        else:
-            headers = {'Content-Type': 'text/html'}
-            return make_response(render_template('login.html'),200,headers)
 
+login_parser = reqparse.RequestParser()
+login_parser.add_argument('username', type=str, required=True)
+login_parser.add_argument('password', type=str, required=True)
+# args = parser.parse_args()
 @api.route('/login')
 class Login(Resource):
+    @api.doc(parser=login_parser)
     def post(self):
+        args = login_parser.parse_args()
         login_user = users.find_one({'username' : request.form['username']})
-        current_user_role = login_user['role']
-
+        
         if login_user:
             if request.form['pass'] == login_user['password']:
                 session['username'] = request.form['username']
+                current_user_role = login_user['role']
                 session['role'] = current_user_role
                 return redirect(url_for('home', role=session['role']))
 
         return 'Invalid username/password combination'
+    
+    def get(self):
+        if 'username' in session:
+            return make_response(render_template('home.html', role=session['role']),200,headers)
+ 
+        else:
+            headers = {'Content-Type': 'text/html'}
+            return make_response(render_template('login.html'),200,headers)
 
 @api.route('/register')
 class Register(Resource):
@@ -58,8 +61,7 @@ class Register(Resource):
         existing_user = users.find_one({'username' : request.form['username']})
 
         if existing_user is None:
-            users.insert_one({'username' : request.form['username'], 'password' : request.form['pass'], 'role' : request.form['role']})
-            session['username'] = request.form['username']
+            users.insert_one({'username' : request.form['username'], 'password' : request.form['pass'], 'role' : request.form['options']})
             return redirect(url_for('login'))
         
         return 'That username already exists!'
@@ -76,10 +78,27 @@ class Logout(Resource):
 
 @api.route('/home')
 class Home(Resource):
-    
     def get(self):
+        #pull my doctors and my patients here
+        patients = []
+        if(request.args.get('role') == 'mp'):
+            found = assign_users.find({"mp" : session['username']}, {'patient':1})
+            print(found)
+            for find in found:
+                patients.append(find['patient'])
+
+        mps=[]
+        print(session)
+        if(request.args.get('role') == 'patient'):
+            found = assign_users.find({"patient" : session['username']}, {"mp":1})
+            print(found)
+            for find in found:
+                mps.append(find['mp'])
+
         headers = {'Content-Type': 'text/html'}
-        return make_response(render_template('home.html', user=request.args.get('role')),200,headers)
+        return make_response(render_template('home.html', user=request.args.get('role'), patients=patients, mps=mps),200,headers)
+
+###########################################################################################
 
 '''
 This function takes in user input because it is the first step that only administrators, 
@@ -88,7 +107,6 @@ who are presumably authorized already, can do
 @api.route('/register_device')
 class RegisterDevice(Resource):
     def post(self):
-        # register device
         existing_dev = reg_dev.find_one({'device_id' : request.form['device_id']})
         if existing_dev is None:
             reg_dev.insert_one({'device_id' : request.form['device_id'], 'device_type' : request.form['device_type'], "assigned": False})
@@ -165,25 +183,67 @@ class AssignDevice(Resource):
 @api.route('/data_push')
 class DataPush(Resource):
     def post(self):
-        measurements.insert_one({'device_id' : request.form['device_id'], 'device_type' : request.form['device_type'], 'user_id' : request.form['user_id'], 'measurement' : request.form['measurement'], 'timestamp': request.form['timestamp']})
+        dropdown_values = list(request.form.values())
+        print(dropdown_values)
+        device_id = dropdown_values[0].partition(":")[2]
+        device_type = dropdown_values[0].partition(":")[0]
+        patient = dropdown_values[1]
+        measurements.insert_one({'device_id' : device_id, 'device_type' : device_type, 'user_id' : patient, 'measurement' : request.form['measurement'], 'timestamp': request.form['timestamp']})
         return 'Success'
 
     def get(self):
+
         devices = []
         devices_type = []
-        #only devices that are assigned to a patient can add data
-        devices_temp = reg_dev.find( {"assigned": True}, {"device_id" : 1, "device_type" : 1} )
-        for device in devices_temp:
-            devices.append(device['device_type'] + ': ' +device['device_id'])
+        if(session['role'] == 'mp'):
+            #only devices that are assigned to a patient can add data
+            devices_temp = reg_dev.find( {"assigned": True}, {"device_id" : 1, "device_type" : 1} )
+            for device in devices_temp:
+                devices.append(device['device_type'] + ': ' +device['device_id'])
 
-        # #for a given patient, only devices assigned to them can add data for them
-        # dropdown_values = list(request.form.values())
-        # device_id = dropdown_values[0].partition(":")[0]
-        # # patient = dropdown_values[1]
-        # patient = assig_dev.find_one({'device_id' : device})
+        #different devices list if the user is a patient
+        #only devices that are assigned to a patient can add data
+        if(session['role'] == 'patient'):
+            devices_temp = assig_dev.find( {"patient": session['username']}, {"Device" : 1} )
+            for device in devices_temp:
+                devices.append(device['Device'] + ': Unknown')
+
+        patients = []
+        patients_temp = assig_dev.find({})
+        for patient in patients_temp:
+            if patient['patient'] not in patients:
+                patients.append(patient['patient'])
+        
 
         headers = {'Content-Type': 'text/html'}
-        return make_response(render_template('dataPush.html', devices=devices),200,headers)
-    
+        return make_response(render_template('dataPush.html', devices=devices, patients=patients, role=session['role']),200,headers)
+
+'''
+Delete methods
+'''
+@api.route('/unassign_patients')
+class UnassignPatients(Resource):  
+    def get(self):
+        return
+
+    def delete(self):
+        return
+
+@api.route('/unassign_devices')
+class UnassignDevices(Resource):  
+    def get(self):
+        return
+
+    def delete(self):
+        return
+
+@api.route('/delete_devices')
+class DeleteDevices(Resource):  
+    def get(self):
+        return
+
+    def delete(self):
+        return
+
 if __name__=="__main__":
     app.run(debug=True)
