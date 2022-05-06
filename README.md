@@ -4,7 +4,7 @@ Author: Carmen Hurtado
 ## Project Description
 
 ## Final Project Information
-**This repo serves for both project 2 and final project for this class. TO SEE FINAL VERSION OF THE FINAL PROJECT PLEASE GO TO THE "DEVICE" BRANCH**
+**This repo serves for both project 2 and final project for this class. TO SEE FINAL VERSION OF THE FINAL PROJECT PLEASE GO TO THE [DEVICE](https://github.com/carmenhg/ec530-monitor-patients-platform/tree/device) BRANCH**
 
 ## Project 2 Information
 **Please visit the wiki page for this repo for a more detailed documentation on each API function for the different modules that are implemented [WIKI](https://github.com/carmenhg/ec530-monitor-patients-platform/wiki/Chat-Module)**
