@@ -6,7 +6,7 @@ Author: Carmen Hurtado
 ## Documentation 
 To document my API I used Swagger with flask-restx. The functions are documented by route and include any parameters that are needed for the API call. 
 
- ![swagger](/images/swagger.png)
+![swagger](/images/swagger.png)
 
 ## Project Description
 A WEB application that uses a restful API to monitor patient data. It is a platform where administrators, medical professionals, and patients can manage device data. 
@@ -16,8 +16,16 @@ This module registers users. All information needed is username, password, and r
 
 Main objectives of this module:
 - Register users 
+    - Adds a new user to the database 
+    ![register](/images/register-screen.png)
+
 - Assign medical professionals to patients
+    - assigns a medical professional registered user to a registered patient
+    ![assignmp](/images/assign-mp-screen.png)
+
 - Unassign medical professionals to patients
+    - assigns a medical professional registered user from a registered patient
+    ![unassignmp](/images/unassign-mp-screen.png)
 
 ## DEVICE Interface
 This module has 3 main objectives:
