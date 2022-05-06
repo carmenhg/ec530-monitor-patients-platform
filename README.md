@@ -17,15 +17,28 @@ This module registers users. All information needed is username, password, and r
 Main objectives of this module:
 - Register users 
     - Adds a new user to the database 
+    - accepted roles: patients, medical professional, administrators
+        - each user can perform certain tasks in the platform, not everyone has the same permissions
     ![register](/images/register-screen.png)
+
+    - Tasks available to Administrators
+     ![register](/images/admin-view.png)
+
+    - Tasks available to MPs
+     ![register](/images/mp-view.png)
+
+    - Tasks available to Patients
+     ![register](/images/patient-view.png)
 
 - Assign medical professionals to patients
     - assigns a medical professional registered user to a registered patient
-    ![assignmp](/images/assign-mp-screen.png)
+    - only administrators can perform this action. The following screen will only be available for a user that has the role of administrator
+    - To account for error checking I limit the choices for both the medical professionals and patients that are available so that the user does not have to manually input names or values.
+    ![assignmp](/images/assign-patients.png)
 
 - Unassign medical professionals to patients
     - assigns a medical professional registered user from a registered patient
-    ![unassignmp](/images/unassign-mp-screen.png)
+    - only administrators can perform this action. The following screen will only be available for a user that has the role of administrator
 
 ## DEVICE Interface
 This module has 3 main objectives:
@@ -64,13 +77,18 @@ API definitions:
         - Device needs to be one of the acceptable devices. For example a phone cannot register 
         - ASSUMPTIONS:
             - None, any 3rd party device that is acceptable can register
+    - Only adiministrators can use this function
+    ![unassignmp](/images/register-device.png)
+
 - assign_device
     - This function assigns a device to a patient
         - Device needs to be in the list of registered devices to be able to be assigned 
         - Device cannot push_data unless there is a user_id specified to it
         - Can a device be assigned to a patient that already has a device of the same type assigned?
         - ASSUMPTIONS:
-            - Only MPs can assign a device, MP_id will be provided when assigning a device. I don’t have to worry about where that id is coming from 
+            - Only MPs can assign a device
+        - I limit the choices to account for error checking. Only devices id show at the moment. Ideally we would want to show what type of device it is and render this dynamically as the mp starts choosing from the dropdown menu. 
+        ![unassignmp](/images/assign-device.png)
 
 - unassign_device
     - This functions removes the device from a patient and makes it available to assign to a different patient
@@ -80,7 +98,12 @@ API definitions:
     - This function pushes new data (device measurement) to the db 
         - Device needs to have a user_id associated to it to be able to do this 
         - ASSUMPTIONS:
-            - None 
+            - None
+        - Only patients or mps can push data from a device
+        - MPs view can choose for which patient to add this data
+        ![unassignmp](/images/push-data-mp.png)
+        - Patients view cannot for which patient to add this data
+        ![unassignmp](/images/push-data-patient.png)
 
 ## Database Design
 I am using MongoDB for this project. I have two databases: *auth* and *device*. 
