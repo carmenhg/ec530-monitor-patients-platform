@@ -3,12 +3,21 @@
 Author: Carmen Hurtado 
 
 **API Documentation is made using Flask-restx Swagger**
+## Documentation 
+To document my API I used Swagger with flask-restx. The functions are documented by route and include any parameters that are needed for the API call. 
+
+ ![swagger](/images/swagger.png)
 
 ## Project Description
 A WEB application that uses a restful API to monitor patient data. It is a platform where administrators, medical professionals, and patients can manage device data. 
 
 ## USER Interface
-This module registers users. All information needed is username, password, and role. The Web appliclation creates a session for each user to authenticate througout the process. 
+This module registers users. All information needed is username, password, and role. The Web appliclation creates a session for each user to authenticate througout the process and populate the user role through the screens to render content conditionally.
+
+Main objectives of this module:
+- Register users 
+- Assign medical professionals to patients
+- Unassign medical professionals to patients
 
 ## DEVICE Interface
 This module has 3 main objectives:
@@ -41,24 +50,24 @@ User stories:
 - MP can see which devices are assigned to patients 
 
 API definitions:
-- Register_device
+- register_device
     - This function registers a new device that then will be available for assigning and measuring data
         - Devices cannot double register 
         - Device needs to be one of the acceptable devices. For example a phone cannot register 
         - ASSUMPTIONS:
             - None, any 3rd party device that is acceptable can register
-- Assign_device
+- assign_device
     - This function assigns a device to a patient
-        -cDevice needs to be in the list of registered devices to be able to be assigned 
+        - Device needs to be in the list of registered devices to be able to be assigned 
         - Device cannot push_data unless there is a user_id specified to it
         - Can a device be assigned to a patient that already has a device of the same type assigned?
         - ASSUMPTIONS:
             - Only MPs can assign a device, MP_id will be provided when assigning a device. I don’t have to worry about where that id is coming from 
 
-- Pull_data
-    - This function pulls data from the db given a device id 
-    - ASSUMPTIONS:
-        - None
+- unassign_device
+    - This functions removes the device from a patient and makes it available to assign to a different patient
+        - No assumptions needed
+
 - Push_data
     - This function pushes new data (device measurement) to the db 
         - Device needs to have a user_id associated to it to be able to do this 

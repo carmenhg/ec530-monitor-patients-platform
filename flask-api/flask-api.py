@@ -4,7 +4,6 @@ from flask_restx import Api, Resource, reqparse
 from pymongo import MongoClient
 from flask_pymongo import pymongo
 import device
-import db
 import os
 import random
 
@@ -55,8 +54,13 @@ class Login(Resource):
             headers = {'Content-Type': 'text/html'}
             return make_response(render_template('login.html'),200,headers)
 
+register_parser = reqparse.RequestParser()
+register_parser.add_argument('username', type=str, required=True)
+register_parser.add_argument('password', type=str, required=True)
+register_parser.add_argument('role', type=str, required=True)
 @api.route('/register')
 class Register(Resource):
+    @api.doc(parser=register_parser)
     def post(self):
         existing_user = users.find_one({'username' : request.form['username']})
 
@@ -104,8 +108,12 @@ class Home(Resource):
 This function takes in user input because it is the first step that only administrators, 
 who are presumably authorized already, can do
 '''
+register_device_parser = reqparse.RequestParser()
+register_device_parser.add_argument('device_id', type=int, required=True)
+register_device_parser.add_argument('device_type', type=str, required=True)
 @api.route('/register_device')
 class RegisterDevice(Resource):
+    @api.doc(parser=register_device_parser)
     def post(self):
         existing_dev = reg_dev.find_one({'device_id' : request.form['device_id']})
         if existing_dev is None:
@@ -121,8 +129,12 @@ class RegisterDevice(Resource):
 '''
 This function has preset values that can be selected, this will limit user input and errors that come with it.
 '''
+assign_patients_parser = reqparse.RequestParser()
+assign_patients_parser.add_argument('patient', type=str, required=True)
+assign_patients_parser.add_argument('mp', type=str, required=True)
 @api.route('/assign_patients')
 class AssignPatients(Resource):
+    @api.doc(parser=assign_patients_parser)
     def post(self):
        #assign patient to mp
        #get values from user dropdown menu selction
@@ -150,8 +162,12 @@ class AssignPatients(Resource):
 '''
 This function has preset values that can be selected, this will limit user input and errors that come with it.
 '''
+assign_device_parser = reqparse.RequestParser()
+assign_device_parser.add_argument('patient', type=str, required=True)
+assign_device_parser.add_argument('device_id', type=int, required=True)
 @api.route('/assign_device')
 class AssignDevice(Resource):
+    @api.doc(parser=assign_device_parser)
     def post(self):
         #assign device
         #get values from user dropdown menu selction
@@ -180,8 +196,15 @@ class AssignDevice(Resource):
 '''
 
 '''
+data_push_parser = reqparse.RequestParser()
+data_push_parser.add_argument('device_type', type=str, required=True)
+data_push_parser.add_argument('device_id', type=int, required=True)
+data_push_parser.add_argument('patient', type=str, required=True)
+data_push_parser.add_argument('measurement', type=float, required=True)
+data_push_parser.add_argument('timestamp', type=str, required=True)
 @api.route('/data_push')
 class DataPush(Resource):
+    @api.doc(parser=data_push_parser)
     def post(self):
         dropdown_values = list(request.form.values())
         print(dropdown_values)
