@@ -4,6 +4,10 @@ import string
 import random
 import re
 
+"""
+This file was used for project 2. Functions are not connected to the database. Look at flask-api.py for the db implementation
+"""
+
 #############################################################################################################################
 
 #This function registers a device into the systems DB (soon to come)

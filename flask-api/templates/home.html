@@ -1,37 +1,76 @@
 {% extends "layout.html" %}
 {% block body %}
+<style>
+table, th, td {
+    border:1px solid black;
+}
+</style>
+<body>
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
-            <!-- Admin tasks -->
             {% if user=='admin'%}
+            <h1>Hello Admin</h1>
             <div>
-                <a href="{{ url_for('register_device') }}">Register a device</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('register_device') }}">Register a device</a>
             </div>
+        </br>
             <div>
-                <a href="{{ url_for('assign_patients') }}">Assign Patients</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('assign_patients') }}">Assign Patients</a>
             </div>
+        </br>
             <div>
-                <a href="{{ url_for('logout') }}">Log Out</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('logout') }}">Log Out</a>
             </div>
             {% elif user=='mp'%}
+            <h1>Hello MP</h1>
+            <h1>Your Patients</h1>
+            <table style="width:100%">
+                <tr>
+                  <th> Patient Name</th>
+                  <th> Devices Assigned</th>
+                </tr>
+                {% for patient in patients%}
+                    <tr>
+                        <td> {{patient}}</td>
+                        <td> None</td>
+                    </tr>
+                {%endfor%}
+            </table>
+        </br>
             <!-- MP tasks -->
             <div>
-                <a href="{{ url_for('assign_device') }}">Assign Device</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('assign_device') }}">Assign Device</a>
             </div>
+        </br>
             <div>
-                <a href="{{ url_for('data_push') }}">Add Data</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('data_push') }}">Add Data</a>
             </div>
+        </br>
             <div>
-                <a href="{{ url_for('logout') }}">Log Out</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('logout') }}">Log Out</a>
             </div>
             {% elif user=='patient'%}
+            <h1>Hello Patient</h1>
+            <h1>Your MPs</h1>
+            <table style="width:100%">
+                <tr>
+                  <th> MP Name</th>
+                </tr>
+                {% for mp in mps%}
+                    <tr>
+                        <td> {{mp}}</td>
+                    </tr>
+                {%endfor%}
+            </table>
+        </br>
             <!-- Patient tasks -->
             <div>
-                <a href="{{ url_for('data_push') }}">Add Data</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('data_push') }}">Add Data</a>
             </div>
+        </br>
             <div>
-                <a href="{{ url_for('logout') }}">Log Out</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('logout') }}">Log Out</a>
             </div>
             {% endif %}
         </div>
